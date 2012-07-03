@@ -7,22 +7,58 @@
  * Just for fun...
  */
 
-namespace Vivacom\TranslationBundle\Entity\Base;
+namespace Cypress\TranslationBundle\Entity\Base;
 
-use Vivacom\CargoBundle\Entity\Abstracts\TraduzioneEntity;
+use Cypress\TranslationBundle\Entity\Base\TranslationEntity;
+use Doctrine\Common\Collections\ArrayCollection;
 
 abstract class TranslatableEntity
 {
+    protected $locale;
+
+    protected $translations;
+
     /**
-     * Aggiunge una traduzione, se già esiste aggiorna
-     *
-     * @param string $lang    locale
-     * @param string $field   il campo da tradurre
-     * @param string $content il contenuto del campo
+     * Class constructor
+     */
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
+
+    /**
+     * get the name of the TranslationEntity
      *
      * @abstract
+     * @return mixed
      */
-    abstract function addOrUpdateTranslation($lang, $field, $content);
+    abstract public function getTranslationEntity();
+
+    /**
+     * get the default language
+     *
+     * @abstract
+     * @return string
+     */
+    abstract public function getDefaultLanguage();
+
+    /**
+     * get an array of supported languages
+     *
+     * @abstract
+     * @return array
+     */
+    abstract public function getOtherLanguages();
+
+    /**
+     * get all the languages
+     *
+     * @return array
+     */
+    private function getAllLanguages()
+    {
+        return array_merge(array($this->getDefaultLanguage()), $this->getOtherLanguages());
+    }
 
     /**
      * setter della lingua dell'entità
@@ -31,7 +67,10 @@ abstract class TranslatableEntity
      *
      * @abstract
      */
-    abstract function setTranslatableLocale($lang);
+    public function setTranslatableLocale($lang)
+    {
+        $this->locale = $lang;
+    }
 
     /**
      * getter della lingua
@@ -39,32 +78,39 @@ abstract class TranslatableEntity
      * @abstract
      * @return string
      */
-    abstract function getLocale();
+    public function getLocale()
+    {
+        return $this->locale;
+    }
 
     /**
-     * setter traduzioni
+     * Add a translation, or update if already exists
      *
-     * @abstract
-     *
-     * @param \Doctrine\Common\Collections\ArrayCollection $traduzioni collection di traduzioni
+     * @param string $lang    locale
+     * @param string $field   il campo da tradurre
+     * @param string $content il contenuto del campo
      */
-    abstract function setTraduzioni($traduzioni);
-
-    /**
-     * getter traduzioni
-     *
-     * @abstract
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    abstract function getTraduzioni();
-
-    /**
-     * la proprietà di default da usare per le traduzioni
-     *
-     * @abstract
-     * @return string
-     */
-    abstract function getToStringProperty();
+    public function addOrUpdateTranslation($lang, $field, $content) {
+        if ($lang == $this->getDefaultLanguage()) {
+            $this->$field = $content;
+            return;
+        }
+        $update = false;
+        foreach ($this->translations as $translation) {
+            if ($lang == $translation->getLocale() && $field == $translation->getField()) {
+                $translation->setContent($content);
+                $update = true;
+            }
+        }
+        if (!$update) {
+            $translationEntity = $this->getTranslationEntity();
+            if (!class_exists($translationEntity)) {
+                throw new \RuntimeException(sprintf("You have defined the class '%' as a TranslationEntity, but it doesn't exists", $translationEntity));
+            }
+            $t = new $translationEntity($lang, $field, $content);
+            $this->addTranslation($t);
+        }
+    }
 
     /**
      * magic method for get on translated fields
@@ -75,15 +121,18 @@ abstract class TranslatableEntity
      */
     public function __get($name)
     {
-        if (false !== $pos = strpos($name, '_en')) {
-            $field = substr($name, 0, $pos);
-            if (!property_exists($this, $field)) {
-                throw new \InvalidArgumentException(sprintf('la proprietà %s non esiste', $field));
-            }
-            foreach ($this->getTraduzioni() as $traduzione) {
-                if ($traduzione->getLocale() == 'en' && $traduzione->getField() == $field) {
-                    return $traduzione->getContent();
+        foreach ($this->getOtherLanguages() as $lang) {
+            if ('_'.$lang === substr($name, strlen($name) - 3, 3)) {
+                $field = substr($name, 0, strlen($name) - 3);
+                if (!property_exists($this, $field)) {
+                    throw new \InvalidArgumentException(sprintf('the property %s is not defined', $field));
                 }
+                foreach ($this->getTranslations() as $translation) {
+                    if ($translation->getLocale() == $lang && $translation->getField() == $field) {
+                        return $translation->getContent();
+                    }
+                }
+                break;
             }
         }
     }
@@ -96,10 +145,13 @@ abstract class TranslatableEntity
      */
     public function __set($name, $value)
     {
-        if (false !== $pos = strpos($name, '_en')) {
-            $field = substr($name, 0, $pos);
-            $this->addOrUpdateTranslation('en', $field, $value);
+        foreach ($this->getOtherLanguages() as $lang) {
+            if ('_'.$lang === substr($name, strlen($name) - 3)) {
+                $field = substr($name, 0, strlen($name) - 3);
+                $this->addOrUpdateTranslation($lang, $field, $value);
+            }
         }
+
     }
 
     /**
@@ -111,25 +163,26 @@ abstract class TranslatableEntity
     public function __call($name, $arguments)
     {
         if ('set' === substr($name, 0, 3) && count($arguments) == 1) {
-            if (substr($name, strlen($name) - 2, strlen($name)) == 'En') {
-                $property        = strtolower(str_replace('En', '', substr($name, 3))) . '_en';
-                $this->$property = $arguments[0];
-                return null;
+            foreach ($this->getOtherLanguages() as $lang) {
+                if (substr($name, strlen($name) - 2, strlen($name)) == ucfirst($lang)) {
+                    $propertyWithoutAction = substr($name, 3);
+                    $property = $this->fromCamelCase(substr($propertyWithoutAction, 0, strlen($name) - 2));
+                    $this->$property = $arguments[0];
+                    return;
+                }
             }
         } else {
             if ('get' === substr($name, 0, 3) && count($arguments) == 0) {
                 $language = substr($name, strlen($name) - 2, strlen($name));
-                if (in_array($language, array('It', 'En'))) {
-                    // elimino get
+                if (in_array($language, $this->getAllLanguages())) {
+                    // strip action
                     $property = substr($name, 3);
                     // elimino la lingua (con substr, perchè potrebbe levare altre cose, occhio!)
-                    $property = substr($property, 0, strlen($property) - 2);
+                    $property = $this->fromCamelCase(substr($property, 0, strlen($property) - 2));
                     // se diverso da It, aggiungo il suffisso della lingua
-                    if ($language !== 'It') {
+                    if ($language !== $this->getDefaultLanguage()) {
                         $property .= '_' . $language;
                     }
-                    // la proprietà è minuscola sempre
-                    $property = strtolower($property);
                     return $this->$property;
                 }
             }
@@ -139,16 +192,67 @@ abstract class TranslatableEntity
     }
 
     /**
-     * aggiunge una traduzione
+     * add a translation
      *
-     * @param \Vivacom\CargoBundle\Entity\Abstracts\TraduzioneEntity $t
+     * @param \Vivacom\CargoBundle\Entity\Abstracts\TranslationEntity $t
      */
-    public function addTraduzione(TraduzioneEntity $t)
+    public function addTranslation(TranslationEntity $t)
     {
-        if (!$this->getTraduzioni()->contains($t)) {
-            $traduzioni   = $this->getTraduzioni();
-            $traduzioni[] = $t;
+        if (!$this->getTranslations()->contains($t)) {
+            $translations   = $this->getTranslations();
+            $translations[] = $t;
             $t->setObject($this);
         }
+    }
+
+    /**
+     * Traduzioni setter
+     *
+     * @param \Doctrine\Common\Collections\ArrayCollection $traduzioni the traduzioni property
+     */
+    public function setTranslations($translations)
+    {
+        $this->translations = $translations;
+    }
+
+    /**
+     * Traduzioni getter
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * Translates a camel case string into a string with underscores (e.g. firstName -&gt; first_name)
+     *
+     * @param string $str String in camel case format
+     *
+     * @return string Translated into underscore format
+     */
+    private function fromCamelCase($str)
+    {
+        $str[0] = strtolower($str[0]);
+        $func = create_function('$c', 'return "_" . strtolower($c[1]);');
+        return preg_replace_callback('/([A-Z])/', $func, $str);
+    }
+
+    /**
+     * Translates a string with underscores into camel case (e.g. first_name -&gt; firstName)
+     *
+     * @param string $str                 String in underscore format
+     * @param bool   $capitaliseFirstChar If true, capitalise the first char in $str
+     *
+     * @return string translated into camel caps
+     */
+    private function toCamelCase($str, $capitaliseFirstChar = false)
+    {
+        if ($capitaliseFirstChar) {
+            $str[0] = strtoupper($str[0]);
+        }
+        $func = create_function('$c', 'return strtoupper($c[1]);');
+        return preg_replace_callback('/_([a-z])/', $func, $str);
     }
 }
