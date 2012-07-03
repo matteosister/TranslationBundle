@@ -9,6 +9,9 @@
 
 namespace Cypress\TranslationBundle\Utilities;
 
+/**
+ * Utilities class to manage camelCase to under_score conversions
+ */
 class CamelCase
 {
     /**

@@ -16,6 +16,9 @@ class CypressTranslationExtension extends Extension
 {
     /**
      * {@inheritDoc}
+     *
+     * @param array            $configs   configuration
+     * @param ContainerBuilder $container container
      */
     public function load(array $configs, ContainerBuilder $container)
     {

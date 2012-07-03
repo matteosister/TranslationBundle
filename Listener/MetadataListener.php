@@ -11,8 +11,16 @@ namespace Cypress\TranslationBundle\Listener;
 
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 
+/**
+ * Listener for loadMetadataClass event
+ */
 class MetadataListener
 {
+    /**
+     * register metadata for TranslatableEntity class
+     *
+     * @param \Doctrine\ORM\Event\LoadClassMetadataEventArgs $eventArgs args
+     */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
         $metadata = $eventArgs->getClassMetadata();

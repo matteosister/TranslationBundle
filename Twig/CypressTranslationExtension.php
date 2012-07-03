@@ -9,6 +9,9 @@
 
 namespace Cypress\TranslationBundle\Twig;
 
+/**
+ * Twig extension
+ */
 class CypressTranslationExtension extends \Twig_Extension
 {
     /**
@@ -16,6 +19,11 @@ class CypressTranslationExtension extends \Twig_Extension
      */
     private $container;
 
+    /**
+     * Class constructor
+     *
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container the service container
+     */
     public function __construct($container)
     {
         $this->container = $container;
@@ -45,14 +53,16 @@ class CypressTranslationExtension extends \Twig_Extension
     /**
      * Translate a field of an entity
      *
-     * @param \Vivacom\CargoBundle\Entity\Abstracts\TranslatableEntity $ent   a TranslatableEntity
-     * @param string                                                   $field name of the field
-     *
-     * @return mixed
+     * @param Object      $entity the entity
+     * @param string      $field  name of the field
+     * @param null|string $lang   the two digit language
      *
      * @throws \Twig_Error_Runtime
+     * @return mixed
+     *
      */
-    public function translateEntity($entity, $field, $lang = null) {
+    public function translateEntity($entity, $field, $lang = null)
+    {
         if (!is_a($entity, 'Cypress\TranslationBundle\Entity\Base\TranslatableEntity')) {
             throw new \Twig_Error_Runtime('The "translate" filter can be applied only to an entity that extends "Cypress\TranslationBundle\Entity\Base\TranslatableEntity"');
         }

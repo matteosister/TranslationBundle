@@ -12,6 +12,9 @@ namespace Cypress\TranslationBundle\Entity\Base;
 use Cypress\TranslationBundle\Entity\Base\TranslationEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * SuperClass for Translatable entities
+ */
 abstract class TranslatableEntity
 {
     protected $locale;
@@ -89,8 +92,12 @@ abstract class TranslatableEntity
      * @param string $lang    locale
      * @param string $field   il campo da tradurre
      * @param string $content il contenuto del campo
+     *
+     * @throws \RuntimeException
+     * @return
      */
-    public function addOrUpdateTranslation($lang, $field, $content) {
+    public function addOrUpdateTranslation($lang, $field, $content)
+    {
         if ($lang == $this->getDefaultLanguage()) {
             $this->$field = $content;
             return;
@@ -115,8 +122,9 @@ abstract class TranslatableEntity
     /**
      * magic method for get on translated fields
      *
-     * @param $name
+     * @param string $name property name
      *
+     * @throws \InvalidArgumentException
      * @return mixed
      */
     public function __get($name)
@@ -140,8 +148,8 @@ abstract class TranslatableEntity
     /**
      * magic method per set su campi tradotti
      *
-     * @param $name
-     * @param $value
+     * @param string $name  property name
+     * @param mixed  $value value to set
      */
     public function __set($name, $value)
     {
@@ -157,8 +165,11 @@ abstract class TranslatableEntity
     /**
      * magic method per le chiamate set e get sui campi tradotti. i.e. setNomeEn("pippo")
      *
-     * @param $name
-     * @param $argument
+     * @param string $name      method name
+     * @param array  $arguments arguments array
+     *
+     * @throws \RuntimeException
+     * @return null|mixed
      */
     public function __call($name, $arguments)
     {
@@ -168,7 +179,7 @@ abstract class TranslatableEntity
                     $propertyWithoutAction = substr($name, 3);
                     $property = $this->fromCamelCase(substr($propertyWithoutAction, 0, strlen($name) - 2));
                     $this->$property = $arguments[0];
-                    return;
+                    return null;
                 }
             }
         } else {
@@ -194,21 +205,21 @@ abstract class TranslatableEntity
     /**
      * add a translation
      *
-     * @param \Vivacom\CargoBundle\Entity\Abstracts\TranslationEntity $t
+     * @param \Cypress\TranslationBundle\Entity\Base\TranslationEntity $translation the translation to add
      */
-    public function addTranslation(TranslationEntity $t)
+    public function addTranslation(TranslationEntity $translation)
     {
-        if (!$this->getTranslations()->contains($t)) {
+        if (!$this->getTranslations()->contains($translation)) {
             $translations   = $this->getTranslations();
-            $translations[] = $t;
-            $t->setObject($this);
+            $translations[] = $translation;
+            $translation->setObject($this);
         }
     }
 
     /**
-     * Traduzioni setter
+     * Translations setter
      *
-     * @param \Doctrine\Common\Collections\ArrayCollection $traduzioni the traduzioni property
+     * @param \Doctrine\Common\Collections\ArrayCollection $translations the traduzioni property
      */
     public function setTranslations($translations)
     {
@@ -216,7 +227,7 @@ abstract class TranslatableEntity
     }
 
     /**
-     * Traduzioni getter
+     * Translations getter
      *
      * @return \Doctrine\Common\Collections\ArrayCollection
      */

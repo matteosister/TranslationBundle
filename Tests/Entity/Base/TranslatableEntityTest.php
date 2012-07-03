@@ -7,10 +7,11 @@
  * Just for fun...
  */
 
+namespace Cypress\TranslationBundle\Tests;
+
+/**
+ * Test for translatable entity
+ */
 class TranslatableEntityTest extends PHPUnit_Framework_TestCase
 {
-    public function setUp()
-    {
-
-    }
 }
