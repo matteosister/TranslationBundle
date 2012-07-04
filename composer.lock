@@ -1,0 +1,33 @@
+{
+    "hash": "fa090b7a13ac998cea8cd7e60b7f89f9",
+    "packages": [
+        {
+            "package": "doctrine/common",
+            "version": "2.2.2"
+        },
+        {
+            "package": "monolog/monolog",
+            "version": "1.1.0"
+        },
+        {
+            "package": "swiftmailer/swiftmailer",
+            "version": "v4.1.8"
+        },
+        {
+            "package": "symfony/symfony",
+            "version": "v2.0.15"
+        },
+        {
+            "package": "twig/twig",
+            "version": "v1.8.3"
+        }
+    ],
+    "packages-dev": null,
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ]
+}

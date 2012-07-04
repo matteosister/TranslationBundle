@@ -8,14 +8,35 @@
  * Just for fun...
  */
  
-require_once $_SERVER['SYMFONY'].'/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+//require_once $_SERVER['SYMFONY'].'/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
-use Symfony\Component\ClassLoader\UniversalClassLoader;
+//use Symfony\Component\ClassLoader\UniversalClassLoader;
 
-$loader = new UniversalClassLoader();
-$loader->registerNamespace('Symfony', $_SERVER['SYMFONY']);
-$loader->register();
+//$loader = new UniversalClassLoader();
+//$loader->registerNamespace('Symfony', $_SERVER['SYMFONY']);
+//$loader->register();
 
+
+// if the bundle is within a symfony project, try to reuse the project's autoload
+$autoload = __DIR__.'/../../../../../app/autoload.php';
+
+// if the bundle is the project, try to use the composer's autoload for the tests
+$composerAutoload = __DIR__.'/../vendor/autoload.php';
+
+if (is_file($autoload)) {
+    include $autoload;
+} elseif (is_file($composerAutoload)) {
+    include $composerAutoload;
+} else {
+    die('Unable to find autoload.php file, please use composer to load dependencies:
+
+wget http://getcomposer.org/composer.phar
+php composer.phar install
+
+Visit http://getcomposer.org/ for more information.
+
+');
+}
 
 spl_autoload_register(function($class)
 {
