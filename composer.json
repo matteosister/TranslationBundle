@@ -1,0 +1,23 @@
+{
+    "name": "cypresslab/translation-bundle",
+    "type": "symfony-bundle",
+    "description": "Translation bundle for Symfony2 and Doctrine 2",
+    "keywords": ["orm", "doctrine", "translation"],
+    "homepage": "https://github.com/matteosister/TranslationBundle",
+    "version": "0.1",
+    "license": "LGPL-3.0",
+    "authors": [
+        {
+            "name": "Matteo Giachino",
+            "email": "matteog@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "autoload": {
+            "psr-0": { "Cypress\\TranslationBundle": "" }
+        }
+    }
+}
