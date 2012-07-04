@@ -14,7 +14,7 @@ use Cypress\TranslationBundle\Utilities\CamelCase;
 /**
  * Test for CamelCase
  */
-class TranslatableEntityTest extends \PHPUnit_Framework_TestCase
+class CamelCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var CamelCase
@@ -33,19 +33,21 @@ class TranslatableEntityTest extends \PHPUnit_Framework_TestCase
      */
     public function testFromCamelCase()
     {
-        $this->doAssert('TestTest', 'test_test', 'fromCamelCase');
-        $this->doAssert('Test', 'test', 'fromCamelCase');
+        $this->assertEquals('test_test', $this->camelCase->fromCamelCase('TestTest'));
+        $this->assertEquals('test', $this->camelCase->fromCamelCase('Test'));
+        $this->assertEquals('test_t', $this->camelCase->fromCamelCase('TestT'));
     }
 
     /**
-     * dummy method to test
-     *
-     * @param string $test     test
-     * @param string $expected expected result
-     * @param string $method   method name
+     * toCamelCase Tests
      */
-    private function doAssert($test, $expected, $method)
+    public function testToCamelCase()
     {
-        $this->assertEquals($expected, $this->camelCase->$method($test));
+        $this->assertEquals('testTest', $this->camelCase->toCamelCase('test_test'));
+        $this->assertEquals('TestTest', $this->camelCase->toCamelCase('test_test', true));
+        $this->assertEquals('test', $this->camelCase->toCamelCase('test'));
+        $this->assertEquals('Test', $this->camelCase->toCamelCase('test', true));
+        $this->assertEquals('testT', $this->camelCase->toCamelCase('test_t'));
+        $this->assertEquals('TestT', $this->camelCase->toCamelCase('test_t', true));
     }
 }
