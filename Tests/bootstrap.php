@@ -30,10 +30,10 @@ if (is_file($autoload)) {
 } else {
     die('Unable to find autoload.php file, please use composer to load dependencies:
 
-wget http://getcomposer.org/composer.phar
+curl -s http://getcomposer.org/installer | php
 php composer.phar install
 
-Visit http://getcomposer.org/ for more information.
+Visit http://getcomposer.org/doc/01-basic-usage.md for more information.
 
 ');
 }
