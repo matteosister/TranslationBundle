@@ -11,3 +11,7 @@ branches:
 env:
   - SYMFONY_VERSION=v2.0.15
   - SYMFONY_VERSION=origin/master
+  
+before_script:
+  - curl -s http://getcomposer.org/installer | php
+  - php composer.phar install
