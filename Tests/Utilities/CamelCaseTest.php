@@ -9,12 +9,13 @@
 
 namespace Cypress\TranslationBundle\Tests;
 
+use Cypress\TranslationBundle\Tests\TestCase;
 use Cypress\TranslationBundle\Utilities\CamelCase;
 
 /**
  * Test for CamelCase
  */
-class CamelCaseTest extends \PHPUnit_Framework_TestCase
+class CamelCaseTest extends TestCase
 {
     /**
      * @var CamelCase
