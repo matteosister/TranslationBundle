@@ -7,15 +7,8 @@
  *
  * Just for fun...
  */
- 
-//require_once $_SERVER['SYMFONY'].'/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
-//use Symfony\Component\ClassLoader\UniversalClassLoader;
-
-//$loader = new UniversalClassLoader();
-//$loader->registerNamespace('Symfony', $_SERVER['SYMFONY']);
-//$loader->register();
-
+use Doctrine\Common\ClassLoader;
 
 // if the bundle is within a symfony project, try to reuse the project's autoload
 $autoload = __DIR__.'/../../../../../app/autoload.php';
@@ -46,3 +39,13 @@ spl_autoload_register(function($class)
         return true;
     }
 });
+
+$doctrineDir = realpath(__DIR__.'/../vendor/doctrine');
+$classLoader = new ClassLoader('Doctrine\Common', $doctrineDir . '/common/lib');
+$classLoader->register();
+
+$classLoader = new ClassLoader('Doctrine\DBAL', $doctrineDir . '/dbal/lib');
+$classLoader->register();
+
+$classLoader = new ClassLoader('Doctrine\ORM', $doctrineDir . '/orm/lib');
+$classLoader->register();

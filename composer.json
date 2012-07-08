@@ -15,7 +15,7 @@
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "2.0.*",
-        "doctrine/orm": ">=2.2.2"
+        "doctrine/orm": "2.2.*"
     },
     "autoload": {
         "autoload": {

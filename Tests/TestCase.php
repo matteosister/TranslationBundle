@@ -13,14 +13,23 @@ use Doctrine\ORM\EntityManager,
     Doctrine\ORM\Configuration,
     Doctrine\Common\Cache\ArrayCache,
     Doctrine\Common\ClassLoader,
-    Doctrine\ORM\Tools\SchemaTool;
+    Doctrine\ORM\Tools\SchemaTool,
+    Doctrine\Common\Annotations\AnnotationRegistry;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
+    protected $dbFile;
+
     /**
      * @var \Doctrine\ORM\EntityManager
      */
     private $em;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->dbFile = __DIR__.'/Playground/db/test.db';
+    }
 
     /**
      * Retrieve an EntityManager instance
@@ -32,16 +41,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
         if (null !== $this->em) {
             return $this->em;
         }
-
-        $doctrineDir = __DIR__.'/../../vendor/doctrine';
-        $classLoader = new ClassLoader('Doctrine\Common', $doctrineDir . '/common/lib');
-        $classLoader->register();
-
-        $classLoader = new ClassLoader('Doctrine\DBAL', $doctrineDir . '/dbal/lib');
-        $classLoader->register();
-
-        $classLoader = new ClassLoader('Doctrine\ORM', $doctrineDir . '/orm/lib');
-        $classLoader->register();
 
         $cache = new ArrayCache();
         $config = new Configuration;
@@ -56,7 +55,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
         $connectionOptions = array(
             'driver' => 'pdo_sqlite',
-            'path' => __DIR__.'/Playground/db/test.db'
+            'path' => $this->dbFile
         );
 
         $this->em = EntityManager::create($connectionOptions, $config);
@@ -68,8 +67,16 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $em = $this->getEntityManager();
         $tool = new SchemaTool($em);
         $classes = array(
-          $em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\Book')
+            $em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\Book'),
+            //$em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\BookTranslations')
         );
         $tool->createSchema($classes);
+    }
+
+    protected function deleteSchema()
+    {
+        if (file_exists($this->dbFile)) {
+            unlink($this->dbFile);
+        }
     }
 }

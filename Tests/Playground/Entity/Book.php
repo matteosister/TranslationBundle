@@ -9,23 +9,62 @@
  
 namespace Cypress\TranslationBundle\Tests\Playground\Entity;
 
- 
+use Cypress\TranslationBundle\Entity\Base\TranslatableEntity;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Book table for testing purpose
  *
- * @Entity
- * @Table(name="book")
+ * @ORM\Entity
+ * @ORM\Table(name="book")
  */
-class Book
+class Book extends TranslatableEntity
 {
     /**
      * @var integer
      *
-     * @Id
-     * @Column(type="integer")
-     * @GeneratedValue(strategy="AUTO")
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column
+     */
+    private $title;
+
+    /**
+     * get the name of the TranslationEntity
+     *
+     * @return mixed
+     */
+    public function getTranslationEntity()
+    {
+        return 'Cypress\TranslationBundle\Tests\Playground\Entity\BookTranslations';
+    }
+
+    /**
+     * get the default language
+     *
+     * @return string
+     */
+    public function getDefaultLanguage()
+    {
+        return 'en';
+    }
+
+    /**
+     * get an array of supported languages
+     *
+     * @return array
+     */
+    public function getOtherLanguages()
+    {
+        return array('it', 'es');
+    }
 
     /**
      * Id getter
@@ -35,5 +74,25 @@ class Book
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Title setter
+     *
+     * @param string $title the title property
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * Title getter
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
     }
 }

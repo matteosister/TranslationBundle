@@ -15,6 +15,7 @@ class EntityTest extends TestCase
 {
     public function setUp()
     {
+        $this->deleteSchema();
         $this->createSchema();
     }
 
