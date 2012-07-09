@@ -14,7 +14,10 @@ use Doctrine\ORM\EntityManager,
     Doctrine\Common\Cache\ArrayCache,
     Doctrine\Common\ClassLoader,
     Doctrine\ORM\Tools\SchemaTool,
-    Doctrine\Common\Annotations\AnnotationRegistry;
+    Doctrine\Common\Annotations\AnnotationRegistry,
+    Doctrine\ORM\Mapping\Driver\AnnotationDriver,
+    Doctrine\Common\Annotations\CachedReader,
+    Doctrine\Common\Annotations\AnnotationReader;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -42,11 +45,28 @@ class TestCase extends \PHPUnit_Framework_TestCase
             return $this->em;
         }
 
+        $doctrineDir = realpath(__DIR__.'/../vendor/doctrine');
+        $classLoader = new ClassLoader('Doctrine\Common', $doctrineDir . '/common/lib');
+        $classLoader->register();
+
+        $classLoader = new ClassLoader('Doctrine\DBAL', $doctrineDir . '/dbal/lib');
+        $classLoader->register();
+
+        $classLoader = new ClassLoader('Doctrine\ORM', $doctrineDir . '/orm/lib');
+        $classLoader->register();
+
         $cache = new ArrayCache();
         $config = new Configuration;
+        $config->setMetadataDriverImpl(
+            new AnnotationDriver(
+                new CachedReader(
+                    new AnnotationReader(),
+                    $cache
+                ),
+                array(__DIR__.'/Playground/Entity')
+            )
+        );
         $config->setMetadataCacheImpl($cache);
-        $driverImpl = $config->newDefaultAnnotationDriver(__DIR__.'/Playground/Entity');
-        $config->setMetadataDriverImpl($driverImpl);
         $config->setQueryCacheImpl($cache);
         $config->setProxyDir(__DIR__.'/Playground/Proxies');
         $config->setProxyNamespace('Cypress\TranslationBundle\Tests\Playground\Proxies');

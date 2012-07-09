@@ -39,13 +39,3 @@ spl_autoload_register(function($class)
         return true;
     }
 });
-
-$doctrineDir = realpath(__DIR__.'/../vendor/doctrine');
-$classLoader = new ClassLoader('Doctrine\Common', $doctrineDir . '/common/lib');
-$classLoader->register();
-
-$classLoader = new ClassLoader('Doctrine\DBAL', $doctrineDir . '/dbal/lib');
-$classLoader->register();
-
-$classLoader = new ClassLoader('Doctrine\ORM', $doctrineDir . '/orm/lib');
-$classLoader->register();
