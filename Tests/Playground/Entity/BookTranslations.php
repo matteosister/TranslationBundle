@@ -10,11 +10,12 @@
 namespace Cypress\TranslationBundle\Tests\Playground\Entity;
 
 use Cypress\TranslationBundle\Entity\Base\TranslationEntity;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity
- * @Table(name="book_translations",
- *     uniqueConstraints={@UniqueConstraint(name="lookup_unique_idx", columns={
+ * @ORM\Entity
+ * @ORM\Table(name="book_translations",
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={
  *         "locale", "object_id", "field"
  *     })}
  * )
@@ -24,8 +25,8 @@ class BookTranslations extends TranslationEntity
     /**
      * @var Book
      *
-     * @ManyToOne(targetEntity="Vivacom\CmsBundle\Entity\Post", inversedBy="translations")
-     * @JoinColumn(onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="Cypress\TranslationBundle\Tests\Playground\Entity\Book", inversedBy="translations")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $object;
 }

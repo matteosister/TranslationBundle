@@ -184,7 +184,7 @@ abstract class TranslatableEntity
             }
         } else {
             if ('get' === substr($name, 0, 3) && count($arguments) == 0) {
-                $language = substr($name, strlen($name) - 2, strlen($name));
+                $language = strtolower(substr($name, strlen($name) - 2, strlen($name)));
                 if (in_array($language, $this->getAllLanguages())) {
                     // strip action
                     $property = substr($name, 3);
@@ -199,7 +199,7 @@ abstract class TranslatableEntity
             }
         }
         /* se arrivo qui viene lanciata eccezione */
-        throw new \RuntimeException(sprintf('il metodo %s non esiste', $name));
+        throw new \RuntimeException(sprintf('the method %s doesn\'t exists', $name));
     }
 
     /**

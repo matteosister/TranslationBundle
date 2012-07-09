@@ -19,8 +19,14 @@ use Doctrine\ORM\EntityManager,
     Doctrine\Common\Annotations\CachedReader,
     Doctrine\Common\Annotations\AnnotationReader;
 
+use Cypress\TranslationBundle\Tests\Playground\Entity\Book;
+
 class TestCase extends \PHPUnit_Framework_TestCase
 {
+    const TITLE_EN = 'the lord of the rings';
+    const TITLE_ES = 'el señor de los anillos';
+    const TITLE_IT = 'il signore degli anelli';
+
     protected $dbFile;
 
     /**
@@ -57,6 +63,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
         $cache = new ArrayCache();
         $config = new Configuration;
+        AnnotationRegistry::registerAutoloadNamespace("Doctrine\ORM", $doctrineDir . '/orm/lib');
         $config->setMetadataDriverImpl(
             new AnnotationDriver(
                 new CachedReader(
@@ -82,21 +89,60 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $this->em;
     }
 
+    /**
+     * get entity repository
+     *
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    protected function getBookRepo()
+    {
+        return $this->getEntityManager()->getRepository('Cypress\TranslationBundle\Tests\Playground\Entity\Book');
+    }
+
+    /**
+     * @param array $criteria criteria
+     *
+     * @return Book
+     */
+    protected function getBook($criteria = array())
+    {
+        return $this->getBookRepo()->findOneBy($criteria);
+    }
+
+    /**
+     * Create the schema
+     */
     protected function createSchema()
     {
         $em = $this->getEntityManager();
         $tool = new SchemaTool($em);
         $classes = array(
             $em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\Book'),
-            //$em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\BookTranslations')
+            $em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\BookTranslations')
         );
         $tool->createSchema($classes);
     }
 
+    /**
+     * Delete the schema
+     */
     protected function deleteSchema()
     {
         if (file_exists($this->dbFile)) {
             unlink($this->dbFile);
         }
+    }
+
+    /**
+     * insert fixtures
+     */
+    protected function insertFakeData()
+    {
+        $book = new Book();
+        $book->setTitle(static::TITLE_EN);
+        $book->setTitleEs(static::TITLE_ES);
+        $book->setTitleIt(static::TITLE_IT);
+        $this->getEntityManager()->persist($book);
+        $this->getEntityManager()->flush();
     }
 }

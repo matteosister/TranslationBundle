@@ -17,10 +17,28 @@ class EntityTest extends TestCase
     {
         $this->deleteSchema();
         $this->createSchema();
+        $this->insertFakeData();
     }
 
-    public function testEntityTranslations()
+    public function testEntitygetters()
     {
-        $this->assertTrue(true);
+        $this->assertCount(1, $this->getBookRepo()->findAll());
+
+        $book = $this->getBookRepo()->findOneBy(array());
+        $this->assertEquals(static::TITLE_EN, $book->getTitle());
+        $this->assertEquals(static::TITLE_IT, $book->getTitleIt());
+        $this->assertEquals(static::TITLE_ES, $book->getTitleEs());
+    }
+
+    public function testEntitySetters()
+    {
+        $newTitleEn = 'new en';
+        $newTitleEs = 'nuevo es';
+        $newTitleIt = 'nuovo it';
+        $book = $this->getBook();
+        $book->setTitle($newTitleEn);
+        $this->getEntityManager()->persist($book);
+        $this->getEntityManager()->flush();
+        $this->assertEquals($newTitleEn, $book->getTitle());
     }
 }
