@@ -140,8 +140,17 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         $book = new Book();
         $book->setTitle(static::TITLE_EN);
+        $book->setTheTitle(static::TITLE_EN);
+        $book->setTheCamelTitle(static::TITLE_EN);
+
         $book->setTitleEs(static::TITLE_ES);
+        $book->setTheTitleEs(static::TITLE_ES);
+        $book->setTheCamelTitleEs(static::TITLE_ES);
+
         $book->setTitleIt(static::TITLE_IT);
+        $book->setTheTitleIt(static::TITLE_IT);
+        $book->setTheCamelTitleIt(static::TITLE_IT);
+
         $this->getEntityManager()->persist($book);
         $this->getEntityManager()->flush();
     }

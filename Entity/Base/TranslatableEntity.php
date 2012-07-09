@@ -9,7 +9,8 @@
 
 namespace Cypress\TranslationBundle\Entity\Base;
 
-use Cypress\TranslationBundle\Entity\Base\TranslationEntity;
+use Cypress\TranslationBundle\Entity\Base\TranslationEntity,
+    Cypress\TranslationBundle\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -17,8 +18,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 abstract class TranslatableEntity
 {
-    protected $locale;
-
     protected $translations;
 
     /**
@@ -54,7 +53,7 @@ abstract class TranslatableEntity
     abstract public function getOtherLanguages();
 
     /**
-     * get all the languages
+     * get all the languages (default + others)
      *
      * @return array
      */
@@ -64,37 +63,14 @@ abstract class TranslatableEntity
     }
 
     /**
-     * setter della lingua dell'entità
-     *
-     * @param string $lang locale
-     *
-     * @abstract
-     */
-    public function setTranslatableLocale($lang)
-    {
-        $this->locale = $lang;
-    }
-
-    /**
-     * getter della lingua
-     *
-     * @abstract
-     * @return string
-     */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
-
-    /**
      * Add a translation, or update if already exists
      *
      * @param string $lang    locale
-     * @param string $field   il campo da tradurre
-     * @param string $content il contenuto del campo
+     * @param string $field   field
+     * @param string $content content
      *
-     * @throws \RuntimeException
-     * @return
+     * @throws \Cypress\TranslationBundle\Exception\RuntimeException
+     * @return void
      */
     public function addOrUpdateTranslation($lang, $field, $content)
     {
@@ -112,7 +88,7 @@ abstract class TranslatableEntity
         if (!$update) {
             $translationEntity = $this->getTranslationEntity();
             if (!class_exists($translationEntity)) {
-                throw new \RuntimeException(sprintf("You have defined the class '%' as a TranslationEntity, but it doesn't exists", $translationEntity));
+                throw new RuntimeException(sprintf("You have defined the class '%' as a TranslationEntity, but it doesn't exists", $translationEntity));
             }
             $t = new $translationEntity($lang, $field, $content);
             $this->addTranslation($t);
@@ -129,14 +105,14 @@ abstract class TranslatableEntity
      */
     public function __get($name)
     {
-        foreach ($this->getOtherLanguages() as $lang) {
-            if ('_'.$lang === substr($name, strlen($name) - 3, 3)) {
+        foreach ($this->getOtherLanguages() as $language) {
+            if ('_'.$language === substr($name, strlen($name) - 3)) {
                 $field = substr($name, 0, strlen($name) - 3);
                 if (!property_exists($this, $field)) {
                     throw new \InvalidArgumentException(sprintf('the property %s is not defined', $field));
                 }
                 foreach ($this->getTranslations() as $translation) {
-                    if ($translation->getLocale() == $lang && $translation->getField() == $field) {
+                    if ($translation->getLocale() == $language && $translation->getField() == $field) {
                         return $translation->getContent();
                     }
                 }
@@ -163,43 +139,48 @@ abstract class TranslatableEntity
     }
 
     /**
-     * magic method per le chiamate set e get sui campi tradotti. i.e. setNomeEn("pippo")
+     * magic method for getters and setters on translated field
+     * i.e.:
+     *   getTitle() get title default language
+     *   getTitleEn() get title in en
      *
      * @param string $name      method name
      * @param array  $arguments arguments array
      *
-     * @throws \RuntimeException
+     * @throws \Cypress\TranslationBundle\Exception\RuntimeException
      * @return null|mixed
      */
     public function __call($name, $arguments)
     {
         if ('set' === substr($name, 0, 3) && count($arguments) == 1) {
-            foreach ($this->getOtherLanguages() as $lang) {
-                if (substr($name, strlen($name) - 2, strlen($name)) == ucfirst($lang)) {
-                    $propertyWithoutAction = substr($name, 3);
-                    $property = $this->fromCamelCase(substr($propertyWithoutAction, 0, strlen($name) - 2));
+            // SETTER
+            foreach ($this->getOtherLanguages() as $language) {
+                if (strtolower(substr($name, strlen($name) - 2)) == $language) {
+                    $property = $this->methodToProperty($name).'_'.$language;
                     $this->$property = $arguments[0];
                     return null;
                 }
             }
         } else {
+            // GETTER
             if ('get' === substr($name, 0, 3) && count($arguments) == 0) {
-                $language = strtolower(substr($name, strlen($name) - 2, strlen($name)));
-                if (in_array($language, $this->getAllLanguages())) {
-                    // strip action
-                    $property = substr($name, 3);
-                    // elimino la lingua (con substr, perchè potrebbe levare altre cose, occhio!)
-                    $property = $this->fromCamelCase(substr($property, 0, strlen($property) - 2));
-                    // se diverso da It, aggiungo il suffisso della lingua
+                $language = strtolower(substr($name, strlen($name) - 2));
+                $property = $this->methodToProperty($name);
+                if ($language == $this->getDefaultLanguage()) {
+                    return $this->getDefaultLanguageValue($property);
+                } else if (in_array($language, $this->getAllLanguages())) {
+                    // not the default language
                     if ($language !== $this->getDefaultLanguage()) {
-                        $property .= '_' . $language;
+                        $property .= '_'.$language;
                     }
                     return $this->$property;
+                } else {
+                    throw new RuntimeException(sprintf('You have request the translation in %s for the %s property, but the language is not defined as default nor as other language in the entity', $language, $property));
                 }
             }
         }
-        /* se arrivo qui viene lanciata eccezione */
-        throw new \RuntimeException(sprintf('the method %s doesn\'t exists', $name));
+        /* no method was found, throw exception */
+        throw new RuntimeException(sprintf('the method %s doesn\'t exists', $name));
     }
 
     /**
@@ -219,7 +200,7 @@ abstract class TranslatableEntity
     /**
      * Translations setter
      *
-     * @param \Doctrine\Common\Collections\ArrayCollection $translations the traduzioni property
+     * @param ArrayCollection $translations the traduzioni property
      */
     public function setTranslations($translations)
     {
@@ -229,7 +210,7 @@ abstract class TranslatableEntity
     /**
      * Translations getter
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return ArrayCollection
      */
     public function getTranslations()
     {
@@ -258,12 +239,69 @@ abstract class TranslatableEntity
      *
      * @return string translated into camel caps
      */
-    private function toCamelCase($str, $capitaliseFirstChar = false)
+    private function toCamelCase($str, $capitaliseFirstChar = true)
     {
         if ($capitaliseFirstChar) {
             $str[0] = strtoupper($str[0]);
         }
         $func = create_function('$c', 'return strtoupper($c[1]);');
         return preg_replace_callback('/_([a-z])/', $func, $str);
+    }
+
+    /**
+     * convert a getter/setter method to a property name
+     *
+     * @param string $method the method name
+     *
+     * @return string
+     */
+    private function methodToProperty($method)
+    {
+        // strip action
+        $property = substr($method, 3);
+        // strip language
+        $propertyDirty = substr($property, 0, strlen($property) - 2);
+        if ($this->hasProperty($this->fromCamelCase($propertyDirty))) {
+            return $this->fromCamelCase($propertyDirty);
+        } else if ($this->hasProperty(lcfirst($propertyDirty))) {
+            return lcfirst($propertyDirty);
+        } else {
+            throw new RuntimeException(sprintf('there isn\'t a %s or %s property in the entity', $this->toCamelCase($propertyDirty), lcfirst($propertyDirty)));
+        }
+    }
+
+    /**
+     * get the default language value for the given property
+     *
+     * @param string $property property name
+     *
+     * @return mixed
+     * @throws \Cypress\TranslationBundle\Exception\RuntimeException
+     */
+    private function getDefaultLanguageValue($property)
+    {
+        $reflection = new \ReflectionClass($this);
+        if (!$reflection->hasProperty($property)) {
+            throw new RuntimeException(sprintf('the property %s doesn\'t exists', $property));
+        }
+        $reflectionProp = $reflection->getProperty($property);
+        if ($reflectionProp->isPrivate()) {
+            throw new RuntimeException(sprintf('you have requested the "%s" translation for the property "%s", and "%s" is defined as default language. Use "get%s()" or set the "%s" property as protected',
+                $this->getDefaultLanguage(), $property, $this->getDefaultLanguage(), $this->toCamelCase($property), $property));
+        }
+        return $this->$property;
+    }
+
+    /**
+     * check if the entity has the property
+     *
+     * @param string $property property name
+     *
+     * @return bool
+     */
+    private function hasProperty($property)
+    {
+        $reflection = new \ReflectionClass($this);
+        return $reflection->hasProperty($property);
     }
 }

@@ -37,6 +37,20 @@ class Book extends TranslatableEntity
     private $title;
 
     /**
+     * @var string
+     *
+     * @ORM\Column
+     */
+    private $the_title;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column
+     */
+    private $theCamelTitle;
+
+    /**
      * get the name of the TranslationEntity
      *
      * @return mixed
@@ -94,5 +108,45 @@ class Book extends TranslatableEntity
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * TheTitle setter
+     *
+     * @param string $the_title the the_title property
+     */
+    public function setTheTitle($the_title)
+    {
+        $this->the_title = $the_title;
+    }
+
+    /**
+     * TheTitle getter
+     *
+     * @return string
+     */
+    public function getTheTitle()
+    {
+        return $this->the_title;
+    }
+
+    /**
+     * TheCamelTitle setter
+     *
+     * @param string $theCamelTitle the theCamelTitle property
+     */
+    public function setTheCamelTitle($theCamelTitle)
+    {
+        $this->theCamelTitle = $theCamelTitle;
+    }
+
+    /**
+     * TheCamelTitle getter
+     *
+     * @return string
+     */
+    public function getTheCamelTitle()
+    {
+        return $this->theCamelTitle;
     }
 }
