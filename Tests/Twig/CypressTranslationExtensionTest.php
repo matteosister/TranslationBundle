@@ -22,9 +22,16 @@ class CypressTranslationExtensionTest extends TestCase
 
     public function testExtension()
     {
-        $this->setupTwig();
-        $book = $this->getBook();
-        $template = $this->twig->loadTemplate('main.html.twig');
-        $template->render(array('book' => $book));
+        $this->assertEquals(static::TITLE_EN, $this->getOutput('en'));
+        $this->assertEquals(static::TITLE_IT, $this->getOutput('it'));
+        $this->assertEquals(static::TITLE_ES, $this->getOutput('es'));
+
+        $this->assertEquals(static::TITLE_EN, $this->getOutput('en', 'underscore.html.twig'));
+        $this->assertEquals(static::TITLE_IT, $this->getOutput('it', 'underscore.html.twig'));
+        $this->assertEquals(static::TITLE_ES, $this->getOutput('es', 'underscore.html.twig'));
+
+        $this->assertEquals(static::TITLE_EN, $this->getOutput('en', 'camelCase.html.twig'));
+        $this->assertEquals(static::TITLE_IT, $this->getOutput('it', 'camelCase.html.twig'));
+        $this->assertEquals(static::TITLE_ES, $this->getOutput('es', 'camelCase.html.twig'));
     }
 }

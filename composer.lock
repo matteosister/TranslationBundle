@@ -1,5 +1,5 @@
 {
-    "hash": "611dcdcd317a0c3feed707f8f5bb943c",
+    "hash": "13f06a1687dc292509c5e2b0f5ad3869",
     "packages": [
         {
             "package": "doctrine/common",
@@ -18,18 +18,16 @@
             "commit-date": "1341676080"
         },
         {
-            "package": "monolog/monolog",
-            "version": "1.1.0"
-        },
-        {
-            "package": "swiftmailer/swiftmailer",
-            "version": "v4.1.8"
+            "package": "symfony/symfony",
+            "version": "dev-master",
+            "alias-pretty-version": "2.1.x-dev",
+            "alias-version": "2.1.9999999.9999999-dev"
         },
         {
             "package": "symfony/symfony",
-            "version": "2.0.x-dev",
-            "source-reference": "b18f6f557b5db1e2e6d2c2c0494e0564b91f438d",
-            "commit-date": "1341926882"
+            "version": "dev-master",
+            "source-reference": "064ad6255cca02d473f8feb238c08a80b90a79ca",
+            "commit-date": "1341951444"
         },
         {
             "package": "twig/twig",
@@ -40,8 +38,8 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "584a1a30b9f8249e9b79e83f0dc551edd9ae4d05",
-            "commit-date": "1341924981"
+            "source-reference": "611f4451e3e44b582fc49e901fdf0f149ee50498",
+            "commit-date": "1341937853"
         }
     ],
     "packages-dev": null,

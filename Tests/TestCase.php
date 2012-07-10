@@ -169,7 +169,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $this->getEntityManager()->flush();
     }
 
-    protected function setupTwig($lang = 'en')
+    protected function setupTwig($lang)
     {
         $this->twigLang = $lang;
         \Twig_Autoloader::register();
@@ -192,6 +192,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
 
         $this->twig->addExtension(new CypressTranslationExtension($mockContainer));
+    }
+
+    protected function getOutput($lang, $tpl = 'main.html.twig')
+    {
+        $this->setupTwig($lang);
+        $book = $this->getBook();
+        $template = $this->twig->loadTemplate($tpl);
+        return $template->render(array('book' => $book));
     }
 
     public function getService($id)
