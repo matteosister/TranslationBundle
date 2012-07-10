@@ -19,7 +19,8 @@ use Doctrine\ORM\EntityManager,
     Doctrine\Common\Annotations\CachedReader,
     Doctrine\Common\Annotations\AnnotationReader;
 
-use Cypress\TranslationBundle\Tests\Playground\Entity\Book;
+use Cypress\TranslationBundle\Tests\Playground\Entity\Book,
+    Cypress\TranslationBundle\Twig\CypressTranslationExtension;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -27,12 +28,25 @@ class TestCase extends \PHPUnit_Framework_TestCase
     const TITLE_ES = 'el señor de los anillos';
     const TITLE_IT = 'il signore degli anelli';
 
+    /**
+     * @var string
+     */
     protected $dbFile;
+
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
 
     /**
      * @var \Doctrine\ORM\EntityManager
      */
     private $em;
+
+    /**
+     * @var string
+     */
+    private $twigLang;
 
     public function __construct()
     {
@@ -153,5 +167,45 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
         $this->getEntityManager()->persist($book);
         $this->getEntityManager()->flush();
+    }
+
+    protected function setupTwig($lang = 'en')
+    {
+        $this->twigLang = $lang;
+        \Twig_Autoloader::register();
+
+        $loader = new \Twig_Loader_Filesystem(__DIR__.'/Playground/tpl');
+        $this->twig = new \Twig_Environment($loader, array(
+            'cache' => __DIR__.'/Playground/twig_cache',
+            'debug' => true
+        ));
+        $mockContainer = $this->getMock('Container', array('has', 'get'));
+
+        $mockContainer
+            ->expects($this->exactly(2))
+            ->method('get')
+            ->with($this->logicalOr(
+                $this->equalTo('request'),
+                $this->equalTo('cypress_translations_bundle.utilities.camel_case')
+            ))
+            ->will($this->returnCallback(array($this, 'getService')));
+
+
+        $this->twig->addExtension(new CypressTranslationExtension($mockContainer));
+    }
+
+    public function getService($id)
+    {
+        if ('request' == $id) {
+            $mockRequest = $this->getMock('Request', array('getLocale'));
+            $mockRequest
+                ->expects($this->once())
+                ->method($this->equalTo('getLocale'))
+                ->will($this->returnValue($this->twigLang));
+            return $mockRequest;
+        }
+        if ('cypress_translations_bundle.utilities.camel_case' == $id) {
+            return new \Cypress\TranslationBundle\Utilities\CamelCase();
+        }
     }
 }
