@@ -1,17 +1,21 @@
 {
-    "hash": "ba4b5bd8115aa44fd448ff88638083fc",
+    "hash": "611dcdcd317a0c3feed707f8f5bb943c",
     "packages": [
         {
             "package": "doctrine/common",
-            "version": "2.2.2"
+            "version": "2.2.x-dev",
+            "source-reference": "1e0aa60d109c630d19543d999f12e2852ef8f932",
+            "commit-date": "1334303204"
         },
         {
             "package": "doctrine/dbal",
-            "version": "2.2.2"
+            "version": "2.2.0-RC3"
         },
         {
             "package": "doctrine/orm",
-            "version": "2.2.2"
+            "version": "2.2.x-dev",
+            "source-reference": "5d2a3bcb3b467f41ee58575764f3ba84937f76e4",
+            "commit-date": "1341676080"
         },
         {
             "package": "monolog/monolog",
@@ -23,18 +27,28 @@
         },
         {
             "package": "symfony/symfony",
-            "version": "v2.0.15"
+            "version": "2.0.x-dev",
+            "source-reference": "b18f6f557b5db1e2e6d2c2c0494e0564b91f438d",
+            "commit-date": "1341926882"
         },
         {
             "package": "twig/twig",
-            "version": "v1.8.3"
+            "version": "dev-master",
+            "alias-pretty-version": "1.9.x-dev",
+            "alias-version": "1.9.9999999.9999999-dev"
+        },
+        {
+            "package": "twig/twig",
+            "version": "dev-master",
+            "source-reference": "584a1a30b9f8249e9b79e83f0dc551edd9ae4d05",
+            "commit-date": "1341924981"
         }
     ],
     "packages-dev": null,
     "aliases": [
 
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [
 
     ]
