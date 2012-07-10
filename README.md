@@ -9,7 +9,7 @@ Install
 
 It's always the same
 
-On Symfony 2.0.*
+**Symfony 2.0.***
 
 */deps*
 ```
@@ -31,4 +31,27 @@ then
 
 ```sh
 $ ./bin/vendors install
+```
+
+**Symfony 2.1.***
+
+*composer.json*
+```json
+"require": {
+    "cypresslab-translation-bundle": "dev-master"
+}
+```
+
+Remember to add the minimum stability directive, because this bundle is still in alpha state
+
+*composer.json (root)*
+```json
+"minimum-stability": "dev"
+```
+
+then
+
+```sh
+$ curl -s http://getcomposer.org/installer | php
+$ php composer.phar install
 ```
