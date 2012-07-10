@@ -20,6 +20,7 @@ On Symfony 2.0.*
 
 */app/autoload.php*
 ```php
+<?php
 $loader->registerNamespaces(array(
     // other namespaces
     'Cypress' => __DIR__.'/../vendor/bundles',
@@ -29,5 +30,5 @@ $loader->registerNamespaces(array(
 then
 
 ```sh
-# ./bin/vendors install
+$ ./bin/vendors install
 ```
