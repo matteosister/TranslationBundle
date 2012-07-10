@@ -37,8 +37,10 @@ $ ./bin/vendors install
 
 *composer.json*
 ```json
-"require": {
-    "cypresslab-translation-bundle": "dev-master"
+{
+    "require": {
+        "cypresslab-translation-bundle": "dev-master"
+    }
 }
 ```
 
@@ -46,7 +48,9 @@ Remember to add the minimum stability directive, because this bundle is still in
 
 *composer.json (root)*
 ```json
-"minimum-stability": "dev"
+{
+    "minimum-stability": "dev"
+}
 ```
 
 then
