@@ -59,3 +59,20 @@ then
 $ curl -s http://getcomposer.org/installer | php
 $ php composer.phar install
 ```
+
+**symfony 2.0.* AND Symfony 2.1.***
+
+*/app/AppKernel.php*
+```php
+<?php
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = array(
+            // other bundles
+            new Cypress\TranslationBundle\CypressTranslationBundle()
+        );
+    }
+}
+```
