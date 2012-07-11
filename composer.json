@@ -20,5 +20,6 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-0": { "Cypress\\TranslationBundle": "" }
-    }
+    },
+    "target-dir": "Cypress/TranslationBundle"
 }
