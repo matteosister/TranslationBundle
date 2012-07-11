@@ -1,8 +1,9 @@
 TranslationBundle
 =================
 
-A Symfony2 bundle for translating Doctrine2 entities ![Travis build status](https://secure.travis-ci.org/matteosister/TranslationBundle.png)
+**Alpha state!** please report any bug you find! Or send a PR to become my personal hero...
 
+A Symfony2 bundle for translating Doctrine2 entities ![Travis build status](https://secure.travis-ci.org/matteosister/TranslationBundle.png)
 
 Install
 -------
@@ -116,9 +117,9 @@ class Book
 }
 ```
 
-In order to translate it follow these steps
+In order to translate it:
 
-* create the BookTranslations class (pick the name you want), and make it extends the TranslationEntity superclass. You have to define the $object property, which has a ManyToOne relation with you main book class
+* create the BookTranslations class (pick the name you want), and make it extends the TranslationEntity superclass. You have to define the $object property, which has a ManyToOne relation with your main book class
 
 ```php
 <?php
@@ -218,7 +219,9 @@ class Book extends TranslatableEntity
 ```
 
 **getTranslationEntity**: return a string with the fully qualified name of the translation entity
+
 **getDefaultLanguage**: return a string with the two digit code of the main language
+
 **getOtherLanguages**: return an array with the two digit codes of the other languages
 
 * Rebuild you model
@@ -232,34 +235,6 @@ $ ./app/console doctrine:schema:update --force
 Usage
 -----
 
-Set every property of the Book entity that you want to translate as protected
-This is important because is the base class that access to these properties. So if it's private you get an error!
-
-For example the title of the Book class
-
-```php
-<?php
-/**
- * Books
- *
- * @ORM\Entity
- * @ORM\Table(name="book")
- */
-class Book extends TranslatableEntity
-{
-    // other props
-
-    /**
-     * @var string
-     *
-     * @ORM\Column
-     */
-    protected $title;
-
-    // rest of the class
-}
-```
-
 **Now translate!!!!**
 
 ```php
@@ -270,6 +245,7 @@ $book->setTitle('the lord of the rings'); // default language defined in getDefa
 $book->setTitleEn('the lord of the rings'); // same as before
 $book->setTitleEs('el señor de los anillos'); // set the title in spanish
 $book->setTitleIt('il signore degli anelli'); // guess?
+$book->setTitleRu('some weird letters here'); // throws an exception!
 
 $em->persist($book); // $em is a doctrine entity manager
 $em->flush(); // if you WTF on this go read the doctrine the docs... :)
@@ -278,7 +254,7 @@ $em->flush(); // if you WTF on this go read the doctrine the docs... :)
 echo $book->getTitle(); // the lord of the rings
 echo $book->getTitleEn(); // the lord of the rings
 echo $book->getTitleIt(); // il signore degli anelli...
-// and so one...
+// and so on...
 ```
 
 You can use any naming convention for your properties, underscore and camelCase, as long as you define a getter/setter for the prop.
@@ -299,7 +275,7 @@ Remember to apply the filter directly to the TranslatableEntity instance, and to
 
 If you don't use twig add this to your configuration file:
 
-```yaml
+```yml
 cypress_translation:
     twig: false
 ```
