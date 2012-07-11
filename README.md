@@ -1,6 +1,8 @@
 TranslationBundle
 =================
 
+![Travis build status](https://secure.travis-ci.org/matteosister/TranslationBundle.png)
+
 A Symfony2 bundle for translating Doctrine2 entities
 
 
