@@ -1,52 +1,40 @@
 {
-    "hash": "13f06a1687dc292509c5e2b0f5ad3869",
+    "hash": "689e123a88b5005ffe390121495947a1",
     "packages": [
         {
             "package": "doctrine/common",
-            "version": "2.2.x-dev",
-            "source-reference": "1e0aa60d109c630d19543d999f12e2852ef8f932",
-            "commit-date": "1334303204"
+            "version": "2.2.2"
         },
         {
             "package": "doctrine/dbal",
-            "version": "2.2.0-RC3"
+            "version": "2.2.2"
         },
         {
             "package": "doctrine/orm",
-            "version": "2.2.x-dev",
-            "source-reference": "5d2a3bcb3b467f41ee58575764f3ba84937f76e4",
-            "commit-date": "1341676080"
+            "version": "2.2.2"
+        },
+        {
+            "package": "monolog/monolog",
+            "version": "1.1.0"
+        },
+        {
+            "package": "swiftmailer/swiftmailer",
+            "version": "v4.1.8"
         },
         {
             "package": "symfony/symfony",
-            "version": "dev-master",
-            "alias-pretty-version": "2.1.x-dev",
-            "alias-version": "2.1.9999999.9999999-dev"
-        },
-        {
-            "package": "symfony/symfony",
-            "version": "dev-master",
-            "source-reference": "064ad6255cca02d473f8feb238c08a80b90a79ca",
-            "commit-date": "1341951444"
+            "version": "v2.0.16"
         },
         {
             "package": "twig/twig",
-            "version": "dev-master",
-            "alias-pretty-version": "1.9.x-dev",
-            "alias-version": "1.9.9999999.9999999-dev"
-        },
-        {
-            "package": "twig/twig",
-            "version": "dev-master",
-            "source-reference": "611f4451e3e44b582fc49e901fdf0f149ee50498",
-            "commit-date": "1341937853"
+            "version": "v1.8.3"
         }
     ],
     "packages-dev": null,
     "aliases": [
 
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": [
 
     ]

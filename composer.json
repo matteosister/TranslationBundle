@@ -14,13 +14,10 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "symfony/symfony": "2.1.*",
+        "symfony/symfony": "2.0.*",
         "doctrine/orm": "2.2.*"
     },
-    "minimum-stability": "dev",
     "autoload": {
-        "autoload": {
-            "psr-0": { "Cypress\\TranslationBundle": "" }
-        }
+        "psr-0": { "Cypress\\TranslationBundle": "" }
     }
 }
