@@ -154,6 +154,11 @@ abstract class TranslatableEntity
     {
         if ('set' === substr($name, 0, 3) && count($arguments) == 1) {
             // SETTER
+            if (strtolower(substr($name, strlen($name) - 2)) == $this->getDefaultLanguage()) {
+                $method = substr($name, 0, strlen($name) - 2);
+                call_user_func(array($this, $method), $arguments[0]);
+                return;
+            }
             foreach ($this->getOtherLanguages() as $language) {
                 if (strtolower(substr($name, strlen($name) - 2)) == $language) {
                     $property = $this->methodToProperty($name).'_'.$language;
@@ -167,7 +172,7 @@ abstract class TranslatableEntity
                 $language = strtolower(substr($name, strlen($name) - 2));
                 $property = $this->methodToProperty($name);
                 if ($language == $this->getDefaultLanguage()) {
-                    return $this->getDefaultLanguageValue($property);
+                    return $this->getDefaultLanguageValue($name);
                 } else if (in_array($language, $this->getAllLanguages())) {
                     // not the default language
                     if ($language !== $this->getDefaultLanguage()) {
@@ -278,18 +283,14 @@ abstract class TranslatableEntity
      * @return mixed
      * @throws \Cypress\TranslationBundle\Exception\RuntimeException
      */
-    private function getDefaultLanguageValue($property)
+    private function getDefaultLanguageValue($method)
     {
+        $method = substr($method, 0, strlen($method) - 2);
         $reflection = new \ReflectionClass($this);
-        if (!$reflection->hasProperty($property)) {
-            throw new RuntimeException(sprintf('the property %s doesn\'t exists', $property));
+        if (!$reflection->hasMethod($method)) {
+            throw new RuntimeException(sprintf('You must implement a %s method', $method));
         }
-        $reflectionProp = $reflection->getProperty($property);
-        if ($reflectionProp->isPrivate()) {
-            throw new RuntimeException(sprintf('you have requested the "%s" translation for the property "%s", and "%s" is defined as default language. Use "get%s()" or set the "%s" property as protected',
-                $this->getDefaultLanguage(), $property, $this->getDefaultLanguage(), $this->toCamelCase($property), $property));
-        }
-        return $this->$property;
+        return call_user_func(array($this, $method));
     }
 
     /**

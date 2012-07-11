@@ -6,7 +6,6 @@
 
     <parameters>
         <parameter key="vivacom_translation.doctrine_listener.class">Cypress\TranslationBundle\Listener\MetadataListener</parameter>
-        <parameter key="vivacom_translation.twig_extension.class">Cypress\TranslationBundle\Twig\CypressTranslationExtension</parameter>
         <parameter key="vivacom_translation.camel_case_utilities.class">Cypress\TranslationBundle\Utilities\CamelCase</parameter>
     </parameters>
 
@@ -16,10 +15,5 @@
         </service>
 
         <service id="cypress_translations_bundle.utilities.camel_case" class="%vivacom_translation.camel_case_utilities.class%" />
-
-        <service id="cypress_translations_bundle.twig.cypress_translation_extension" class="%vivacom_translation.twig_extension.class%">
-            <tag name="twig.extension" />
-            <argument type="service" id="service_container" />
-        </service>
     </services>
 </container>

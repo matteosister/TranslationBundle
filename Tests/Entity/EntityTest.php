@@ -50,12 +50,21 @@ class EntityTest extends TestCase
         $this->assertEquals($newTitleIt, $book->getTitleIt());
     }
 
-    /**
-     * @expectedException Cypress\TranslationBundle\Exception\RuntimeException
-     */
-    public function testDefaultLanguageException()
+    public function testSetterDefaultLanguage()
+    {
+        $newTitleEn = 'new en';
+        $book = $this->getBook();
+        $book->setTitleEn($newTitleEn);
+        $this->getEntityManager()->persist($book);
+        $this->getEntityManager()->flush();
+        $this->assertEquals($newTitleEn, $book->getTitle());
+    }
+
+    public function testDefaultLanguage()
     {
         $this->assertEquals(static::TITLE_EN, $this->getBook()->getTitleEn());
+        $this->assertEquals(static::TITLE_EN, $this->getBook()->getTheTitleEn());
+        $this->assertEquals(static::TITLE_EN, $this->getBook()->getTheCamelTitleEn());
     }
 
     public function testUnderscoreProperties()
