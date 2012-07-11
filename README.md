@@ -78,8 +78,8 @@ class AppKernel extends Kernel
 }
 ```
 
-Usage
------
+Configuration
+-------------
 
 Let's assume you have a **Book** entity with a title property
 
