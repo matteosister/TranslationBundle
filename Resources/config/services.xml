@@ -6,6 +6,7 @@
 
     <parameters>
         <parameter key="vivacom_translation.doctrine_listener.class">Cypress\TranslationBundle\Listener\MetadataListener</parameter>
+        <!--<parameter key="vivacom_translation.doctrine_mongodbodm_listener.class">Cypress\TranslationBundle\Listener\MetadataMongoDbOdmListener</parameter>-->
         <parameter key="vivacom_translation.camel_case_utilities.class">Cypress\TranslationBundle\Utilities\CamelCase</parameter>
     </parameters>
 
@@ -13,6 +14,10 @@
         <service id="cypress_translations_bundle.listener.doctrine_listener" class="%vivacom_translation.doctrine_listener.class%">
             <tag name="doctrine.event_listener" event="loadClassMetadata" />
         </service>
+
+        <!--<service id="cypress_translations_bundle.listener.mongodb_odm_listener" class="%vivacom_translation.doctrine_mongodbodm_listener.class%">
+            <tag name="doctrine.odm.mongodb.event_listener" event="loadClassMetadata" />
+        </service>-->
 
         <service id="cypress_translations_bundle.utilities.camel_case" class="%vivacom_translation.camel_case_utilities.class%" />
     </services>

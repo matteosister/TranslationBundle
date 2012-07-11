@@ -63,8 +63,8 @@ class CypressTranslationExtension extends \Twig_Extension
      */
     public function translateEntity($entity, $field, $lang = null)
     {
-        if (!is_a($entity, 'Cypress\TranslationBundle\Entity\Base\TranslatableEntity')) {
-            throw new \Twig_Error_Runtime('The "translate" filter can be applied only to an entity that extends "Cypress\TranslationBundle\Entity\Base\TranslatableEntity"');
+        if (!is_a($entity, 'Cypress\TranslationBundle\Doctrine\Base\Translatable')) {
+            throw new \Twig_Error_Runtime('The "translate" filter can be applied only to an entity that extends "Cypress\TranslationBundle\Doctrine\Base\Translatable"');
         }
         if ($lang == null) {
             $lang = $this->container->get('request')->getLocale();

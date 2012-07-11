@@ -7,9 +7,9 @@
  * Just for fun...
  */
 
-namespace Cypress\TranslationBundle\Entity\Base;
+namespace Cypress\TranslationBundle\Document\Base;
 
-use Cypress\TranslationBundle\Entity\Base\TranslationEntity,
+use Cypress\TranslationBundle\Document\Base\TranslationDocument,
     Cypress\TranslationBundle\Exception\RuntimeException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Cypress\TranslationBundle\Doctrine\Base\Translatable;
@@ -17,10 +17,8 @@ use Cypress\TranslationBundle\Doctrine\Base\Translatable;
 /**
  * SuperClass for Translatable entities
  */
-abstract class TranslatableEntity extends Translatable
+abstract class TranslatableDocument extends Translatable
 {
-    protected $translations;
-
     /**
      * Class constructor
      */
@@ -30,12 +28,12 @@ abstract class TranslatableEntity extends Translatable
     }
 
     /**
-     * get the name of the TranslationEntity
+     * get the name of the TranslationDocument
      *
      * @abstract
      * @return mixed
      */
-    abstract public function getTranslationEntity();
+    abstract public function getTranslationDocument();
 
     /**
      * get the default language
@@ -87,7 +85,7 @@ abstract class TranslatableEntity extends Translatable
             }
         }
         if (!$update) {
-            $translationEntity = $this->getTranslationEntity();
+            $translationEntity = $this->getTranslationDocument();
             if (!class_exists($translationEntity)) {
                 throw new RuntimeException(sprintf("You have defined the class '%' as a TranslationEntity, but it doesn't exists", $translationEntity));
             }
@@ -194,14 +192,13 @@ abstract class TranslatableEntity extends Translatable
     /**
      * add a translation
      *
-     * @param \Cypress\TranslationBundle\Entity\Base\TranslationEntity $translation the translation to add
+     * @param \Cypress\TranslationBundle\Document\Base\TranslationDocument $translation the translation to add
      */
-    public function addTranslation(TranslationEntity $translation)
+    public function addTranslation(TranslationDocument $translation)
     {
         if (!$this->getTranslations()->contains($translation)) {
             $translations   = $this->getTranslations();
             $translations[] = $translation;
-            $translation->setObject($this);
         }
     }
 
@@ -274,7 +271,7 @@ abstract class TranslatableEntity extends Translatable
         } else if ($this->hasProperty(lcfirst($propertyDirty))) {
             return lcfirst($propertyDirty);
         } else {
-            throw new RuntimeException(sprintf('there isn\'t a %s or %s property in the entity', $this->toCamelCase($propertyDirty), lcfirst($propertyDirty)));
+            throw new RuntimeException(sprintf('there isn\'t a %s or %s property in the class', $this->toCamelCase($propertyDirty), lcfirst($propertyDirty)));
         }
     }
 
@@ -297,7 +294,7 @@ abstract class TranslatableEntity extends Translatable
     }
 
     /**
-     * check if the entity has the property
+     * check if the document has the property
      *
      * @param string $property property name
      *
