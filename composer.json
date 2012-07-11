@@ -17,6 +17,7 @@
         "symfony/symfony": "2.0.*",
         "doctrine/orm": "2.2.*"
     },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-0": { "Cypress\\TranslationBundle": "" }
     }
