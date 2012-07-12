@@ -7,8 +7,8 @@ A Symfony2 bundle for translating Doctrine2 entities ![Travis build status](http
 
 [How to install](https://github.com/matteosister/TranslationBundle/blob/master/Resources/doc/installation.md)
 
-Examples
---------
+WYSIWYG
+-------
 
 ```php
 <?php
