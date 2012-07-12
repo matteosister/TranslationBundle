@@ -37,7 +37,9 @@ class Page extends TranslatableDocument
     /**
      * @var ArrayCollection
      *
-     * @MongoDB\EmbedMany(targetDocument="Cypress\MyBundle\Document\PageTranslations")
+     * @MongoDB\EmbedMany(
+     *   targetDocument="Cypress\MyBundle\Document\PageTranslations"
+     * )
      */
     protected $translations;
 
@@ -131,7 +133,10 @@ class Page extends TranslatableDocument
     /**
      * @var ArrayCollection
      *
-     * @MongoDB\ReferenceMany(targetDocument="Cypress\MyBundle\Document\PageTranslations", cascade={"all"})
+     * @MongoDB\ReferenceMany(
+     *   targetDocument="Cypress\MyBundle\Document\PageTranslations",
+     *   cascade={"all"}
+     * )
      */
     protected $translations;
 }
