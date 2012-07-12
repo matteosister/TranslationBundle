@@ -37,7 +37,7 @@ class Page extends TranslatableDocument
     /**
      * @var ArrayCollection
      *
-     * @MongoDB\EmbedMany(targetDocument="Vivacom\CmsBundle\Document\PageTranslations")
+     * @MongoDB\EmbedMany(targetDocument="Cypress\MyBundle\Document\PageTranslations")
      */
     protected $translations;
 
@@ -93,7 +93,7 @@ Here is the translation document
 
 ```php
 <?php
-namespace Vivacom\CmsBundle\Document;
+namespace Cypress\MyBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Cypress\TranslationBundle\Document\Base\TranslationDocument;
@@ -131,7 +131,7 @@ class Page extends TranslatableDocument
     /**
      * @var ArrayCollection
      *
-     * @MongoDB\ReferenceMany(targetDocument="Vivacom\CmsBundle\Document\PageTranslations", cascade={"all"})
+     * @MongoDB\ReferenceMany(targetDocument="Cypress\MyBundle\Document\PageTranslations", cascade={"all"})
      */
     protected $translations;
 }
@@ -141,7 +141,7 @@ and define the translation document as a real one, not an embedded one
 
 ```php
 <?php
-namespace Vivacom\CmsBundle\Document;
+namespace Cypress\MyBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Cypress\TranslationBundle\Document\Base\TranslationDocument;
