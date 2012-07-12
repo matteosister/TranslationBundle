@@ -244,6 +244,9 @@ cypress_translation:
     twig: false
 ```
 
+Sonata
+------
+
 **this bundle works great with sonata admin bundle** Just name the properties in your admin class
 
 ```php
