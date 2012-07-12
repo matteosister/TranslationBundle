@@ -212,7 +212,7 @@ $book->setTitleIt('il signore degli anelli'); // guess?
 $book->setTitleRu('some weird letters here'); // throws an exception!
 
 $em->persist($book); // $em is a doctrine entity manager
-$em->flush(); // if you WTF on this go read the doctrine the docs... :)
+$em->flush(); // if you WTF on this go read the doctrine docs... :)
 
 // now retrieve
 echo $book->getTitle(); // the lord of the rings
@@ -262,6 +262,13 @@ class TagAdmin extends Admin
         ;
     }
 ```
+
+Careful
+-------
+
+Use a 2 digit code for your languages. Like "en", "it" or "es".
+
+"en_US" **DO NOT WORK!**
 
 Testing
 -------
