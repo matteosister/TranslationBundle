@@ -232,6 +232,26 @@ class Book extends TranslatableEntity
 $ ./app/console doctrine:schema:update --force
 ```
 
+**Important**
+
+If your translatable entity contains a constructor you HAVE to call the parent constructor. For example:
+
+```php
+<?php
+class Book extends TranslatableEntity
+{
+    // properties
+
+    public function __contruct()
+    {
+        // call the parent constructor
+        parent::__construct();
+        // your logic
+        $this->authors = new ArrayCollection();
+    }
+}
+```
+
 **You're done!**
 
 Usage
