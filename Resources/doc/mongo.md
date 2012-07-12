@@ -85,8 +85,8 @@ class Page extends TranslatableDocument
 
 **Some important things to notice**
 
-* you have to manually define the *translations* property, and define it as protected as the base class needs access
-* you have to call the parent constructor if you define one
+* you have to manually define the *translations* property, and **define it as protected** as the base class needs access
+* you have to call the **parent constructor** if you define one
 
 
 Here is the translation document
