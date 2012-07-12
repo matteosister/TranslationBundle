@@ -66,13 +66,25 @@ class CypressTranslationExtension extends \Twig_Extension
         if (!is_a($entity, 'Cypress\TranslationBundle\Doctrine\Base\Translatable')) {
             throw new \Twig_Error_Runtime('The "translate" filter can be applied only to an entity that extends "Cypress\TranslationBundle\Doctrine\Base\Translatable"');
         }
+        // sf 2.1
         if ($lang == null) {
-            $lang = $this->container->get('request')->getLocale();
+            $request = $this->container->get('request');
+            if (method_exists($request, 'getLocale')) {
+                $lang = $this->container->get('request')->getLocale();
+            }
+            // sf 2.0
+            if ($lang == null) {
+                $session = $this->container->get('session');
+                if (method_exists($session, 'getLocale')) {
+                    $lang = $this->container->get('session')->getLocale();
+                }
+            }
         }
         $method = 'get'.$this->container->get('cypress_translations_bundle.utilities.camel_case')->toCamelCase($field, true);
         if ($lang != $entity->getDefaultLanguage()) {
             $method .= $lang;
         }
+
         return $entity->$method();
     }
 

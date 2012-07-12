@@ -5,77 +5,71 @@ TranslationBundle
 
 A Symfony2 bundle for translating Doctrine2 entities ![Travis build status](https://secure.travis-ci.org/matteosister/TranslationBundle.png)
 
-Install
--------
+[How to install](https://github.com/matteosister/TranslationBundle/blob/master/Resources/doc/installation.md)
 
-It's always the same
+Usage
+-----
 
-**Symfony 2.0.***
-
-*/deps*
-```
-[CypressTranslationBundle]
-    git=git://github.com/matteosister/TranslationBundle.git
-    target=bundles/Cypress/TranslationBundle
-```
-
-*/app/autoload.php*
 ```php
 <?php
-$loader->registerNamespaces(array(
-    // other namespaces
-    'Cypress' => __DIR__.'/../vendor/bundles',
-));
+use
+$book = new Cypress\MyBundle\Entity\Book();
+$book->setTitle('the lord of the rings'); // default language defined in getDefaultLanguage()
+$book->setTitleEn('the lord of the rings'); // same as before
+$book->setTitleEs('el señor de los anillos'); // set the title in spanish
+$book->setTitleIt('il signore degli anelli'); // guess?
+$book->setTitleRu('some weird letters here'); // throws an exception!
+
+$em->persist($book); // $em is a doctrine entity manager
+$em->flush(); // if you WTF on this go read the doctrine the docs... :)
+
+// now retrieve
+echo $book->getTitle(); // the lord of the rings
+echo $book->getTitleEn(); // the lord of the rings
+echo $book->getTitleIt(); // il signore degli anelli...
+// and so on...
 ```
 
-then
+You can use any naming convention for your properties, underscore and camelCase, as long as you define a getter/setter for the property
 
-```sh
-$ ./bin/vendors install
+Twig
+----
+
+In your twig templates you can use a nice filter
+
+```html+jinja
+{% for book in books %}
+    <h1>{{ book|translate('title') }}</h1>
+    <p>{{ book|translate('description') }}</p>
+{% endfor %}
 ```
 
-**Symfony 2.1.***
+Remember to apply the filter directly to the TranslatableEntity instance, and to set the property name as the filter argument
 
-*composer.json*
-```json
-{
-    "require": {
-        "cypresslab-translation-bundle": "dev-master"
-    }
-}
+If you don't use twig add this to your configuration file:
+
+```yml
+cypress_translation:
+    twig: false
 ```
 
-Remember to add the minimum stability directive, because this bundle is still in alpha state
+**this bundle works great with sonata admin bundle** Just name the properties in your admin class
 
-*composer.json (root)*
-```json
-{
-    "minimum-stability": "dev"
-}
-```
-
-then
-
-```sh
-$ curl -s http://getcomposer.org/installer | php
-$ php composer.phar install
-```
-
-**symfony 2.0.* AND Symfony 2.1.***
-
-*/app/AppKernel.php*
 ```php
 <?php
-class AppKernel extends Kernel
+namespace Sonata\NewsBundle\Admin;
+use Sonata\AdminBundle\Admin\Admin;
+
+class TagAdmin extends Admin
 {
-    public function registerBundles()
+    protected function configureFormFields(FormMapper $formMapper)
     {
-        $bundles = array(
-            // other bundles
-            new Cypress\TranslationBundle\CypressTranslationBundle()
-        );
+        $formMapper
+            ->add('title')
+            ->add('title_it', 'text')
+            ->add('title_es', 'text')
+        ;
     }
-}
 ```
 
 Configuration
@@ -253,54 +247,6 @@ class Book extends TranslatableEntity
 ```
 
 **You're done!**
-
-Usage
------
-
-**Now translate!!!!**
-
-```php
-<?php
-use
-$book = new Cypress\MyBundle\Entity\Book();
-$book->setTitle('the lord of the rings'); // default language defined in getDefaultLanguage()
-$book->setTitleEn('the lord of the rings'); // same as before
-$book->setTitleEs('el señor de los anillos'); // set the title in spanish
-$book->setTitleIt('il signore degli anelli'); // guess?
-$book->setTitleRu('some weird letters here'); // throws an exception!
-
-$em->persist($book); // $em is a doctrine entity manager
-$em->flush(); // if you WTF on this go read the doctrine the docs... :)
-
-// now retrieve
-echo $book->getTitle(); // the lord of the rings
-echo $book->getTitleEn(); // the lord of the rings
-echo $book->getTitleIt(); // il signore degli anelli...
-// and so on...
-```
-
-You can use any naming convention for your properties, underscore and camelCase, as long as you define a getter/setter for the prop.
-
-Twig
-----
-
-In your twig templates you can use a nice filter
-
-```html+jinja
-{% for book in books %}
-    <h1>{{ book|translate('title') }}</h1>
-    <p>{{ book|translate('description') }}</p>
-{% endfor %}
-```
-
-Remember to apply the filter directly to the TranslatableEntity instance, and to set the property name as the filter argument
-
-If you don't use twig add this to your configuration file:
-
-```yml
-cypress_translation:
-    twig: false
-```
 
 Testing
 -------

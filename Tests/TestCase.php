@@ -182,10 +182,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $mockContainer = $this->getMock('Container', array('has', 'get'));
 
         $mockContainer
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('get')
             ->with($this->logicalOr(
                 $this->equalTo('request'),
+                $this->equalTo('session'),
                 $this->equalTo('cypress_translations_bundle.utilities.camel_case')
             ))
             ->will($this->returnCallback(array($this, 'getService')));
@@ -194,7 +195,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $this->twig->addExtension(new CypressTranslationExtension($mockContainer));
     }
 
-    protected function getOutput($lang, $tpl = 'main.html.twig')
+    protected function getOutput($lang, $tpl='main.html.twig')
     {
         $this->setupTwig($lang);
         $book = $this->getBook();
@@ -207,10 +208,18 @@ class TestCase extends \PHPUnit_Framework_TestCase
         if ('request' == $id) {
             $mockRequest = $this->getMock('Request', array('getLocale'));
             $mockRequest
-                ->expects($this->once())
+                ->expects($this->any())
                 ->method($this->equalTo('getLocale'))
                 ->will($this->returnValue($this->twigLang));
             return $mockRequest;
+        }
+        if ('session' == $id) {
+            $mockSession = $this->getMock('Session', array('getLocale'));
+            $mockSession
+                ->expects($this->any())
+                ->method($this->equalTo('getLocale'))
+                ->will($this->returnValue($this->twigLang));
+            return $mockSession;
         }
         if ('cypress_translations_bundle.utilities.camel_case' == $id) {
             return new \Cypress\TranslationBundle\Utilities\CamelCase();
