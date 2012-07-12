@@ -199,6 +199,11 @@ class Book extends TranslatableEntity
 
 **You're done!**
 
+MongoDB
+-------
+
+read the docs [about MongoDB odm here](https://github.com/matteosister/TranslationBundle/blob/master/Resources/doc/mongo.md)
+
 Usage
 -----
 
