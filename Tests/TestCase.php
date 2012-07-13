@@ -182,7 +182,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $mockContainer = $this->getMock('Container', array('has', 'get'));
 
         $mockContainer
-            ->expects($this->exactly(3))
+            ->expects($this->atLeastOnce())
             ->method('get')
             ->with($this->logicalOr(
                 $this->equalTo('request'),
@@ -195,12 +195,17 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $this->twig->addExtension(new CypressTranslationExtension($mockContainer));
     }
 
-    protected function getOutput($lang, $tpl='main.html.twig')
+    protected function getOutput($lang, $tpl='main.html.twig', $tplLang = null)
     {
         $this->setupTwig($lang);
         $book = $this->getBook();
         $template = $this->twig->loadTemplate($tpl);
-        return $template->render(array('book' => $book));
+        $params = array();
+        $params['book'] = $book;
+        if ($tplLang != null) {
+            $params['language'] = $tplLang;
+        }
+        return $template->render($params);
     }
 
     public function getService($id)

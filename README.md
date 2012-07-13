@@ -23,6 +23,11 @@ $book->getTitleEs();
 // etc...
 ```
 
+```html+jinja
+<h1>{{ book|translate('title') }}</h1>
+<h1>{{ book|translate('title', 'es') }}</h1>
+```
+
 Configuration
 -------------
 
@@ -241,6 +246,14 @@ In your twig templates you can use a nice filter
 ```
 
 Remember to apply the filter directly to the TranslatableEntity instance, and to set the property name as the filter argument
+
+By default, twig gets the language from the actual environment (from the session in sf 2.0 and from the request in sf 2.1), but you can also force the language with twig, just pass the two digit code as the second argument of the filter
+
+```html+jinja
+<h1>{{ book|translate('title') }}</h1>
+<h2>spanish translation: {{ book|translate('title', 'es') }}</h2>
+<h2>italian translation: {{ book|translate('title', 'it') }}</h2>
+```
 
 If you don't use twig add this to your configuration file:
 
