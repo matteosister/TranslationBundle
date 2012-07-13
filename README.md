@@ -23,6 +23,8 @@ $book->getTitleEs();
 // etc...
 ```
 
+In your twig templates
+
 ```html+jinja
 <h1>{{ book|translate('title') }}</h1>
 <h1>{{ book|translate('title', 'es') }}</h1>
