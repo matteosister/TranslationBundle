@@ -97,46 +97,77 @@ abstract class TranslatableEntity extends Translatable
     }
 
     /**
-     * magic method for get on translated fields
+     * magic method for property get on translated fields
      *
      * @param string $name property name
      *
-     * @throws \InvalidArgumentException
+     * @throws RuntimeException
      * @return mixed
      */
     public function __get($name)
     {
-        foreach ($this->getOtherLanguages() as $language) {
-            if ('_'.$language === substr($name, strlen($name) - 3)) {
-                $field = substr($name, 0, strlen($name) - 3);
-                if (!property_exists($this, $field)) {
-                    throw new \InvalidArgumentException(sprintf('the property %s is not defined', $field));
-                }
-                foreach ($this->getTranslations() as $translation) {
-                    if ($translation->getLocale() == $language && $translation->getField() == $field) {
-                        return $translation->getContent();
+        if ('_' == $name[strlen($name) - 3]) {
+            $language = substr($name, strlen($name) - 2);
+            if ($this->getDefaultLanguage() == $language) {
+                $propertyName = substr($name, 0, strlen($name) - 3);
+                $method = 'get'.$this->toCamelCase($propertyName);
+                return $this->$method();
+            }
+            foreach ($this->getOtherLanguages() as $language) {
+                if ('_'.$language === substr($name, strlen($name) - 3)) {
+                    $field = substr($name, 0, strlen($name) - 3);
+                    if (!property_exists($this, $field)) {
+                        throw new RuntimeException(sprintf('property %s doesn\'t exists', $name));
                     }
+                    foreach ($this->getTranslations() as $translation) {
+                        if ($translation->getLocale() == $language && $translation->getField() == $field) {
+                            return $translation->getContent();
+                        }
+                    }
+                    break;
                 }
-                break;
+            }
+        } else {
+            $method = 'get'.$this->toCamelCase($name);
+            if (method_exists($this, $method)) {
+                return $this->$method();
             }
         }
+        throw new RuntimeException(sprintf('property %s doesn\'t exists', $name));
     }
 
     /**
-     * magic method per set su campi tradotti
+     * magic method for property set on translated fields
      *
      * @param string $name  property name
      * @param mixed  $value value to set
+     *
+     * @throws RuntimeException
      */
     public function __set($name, $value)
     {
-        foreach ($this->getOtherLanguages() as $lang) {
-            if ('_'.$lang === substr($name, strlen($name) - 3)) {
-                $field = substr($name, 0, strlen($name) - 3);
-                $this->addOrUpdateTranslation($lang, $field, $value);
+        if ('_' == $name[strlen($name) - 3]) {
+            $language = substr($name, strlen($name) - 2);
+            if ($this->getDefaultLanguage() == $language) {
+                $propertyName = substr($name, 0, strlen($name) - 3);
+                $method = 'set'.$this->toCamelCase($propertyName);
+                $this->$method($value);
+            }
+            foreach ($this->getOtherLanguages() as $lang) {
+                if ($lang === $language) {
+                    $field = substr($name, 0, strlen($name) - 3);
+                    $this->addOrUpdateTranslation($language, $field, $value);
+                    return;
+                }
+            }
+        } else {
+            $method = 'set'.$this->toCamelCase($name);
+            if (method_exists($this, $method)) {
+                $this->$method($value);
+                return;
             }
         }
-
+        throw new RuntimeException(sprintf('property %s doesn\'t exists', $name));
     }
 
     /**
@@ -281,10 +312,10 @@ abstract class TranslatableEntity extends Translatable
     /**
      * get the default language value for the given property
      *
-     * @param string $property property name
+     * @param string $method method name
      *
+     * @throws RuntimeException
      * @return mixed
-     * @throws \Cypress\TranslationBundle\Exception\RuntimeException
      */
     private function getDefaultLanguageValue($method)
     {

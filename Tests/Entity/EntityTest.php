@@ -26,9 +26,28 @@ class EntityTest extends TestCase
         $this->assertCount(1, $this->getBookRepo()->findAll());
     }
 
+    public function testPropertiesAccess()
+    {
+        $book = $this->getBook();
+        $this->assertEquals(static::TITLE_EN, $book->title);
+        $this->assertEquals(static::TITLE_EN, $book->title_en);
+        $this->assertEquals(static::TITLE_ES, $book->title_es);
+        $this->assertEquals(static::TITLE_IT, $book->title_it);
+        $newTitleEn = 'new en';
+        $newTitleEs = 'nuevo es';
+        $newTitleIt = 'nuovo it';
+        $book->title = $newTitleEn;
+        $book->title_es = $newTitleEs;
+        $book->title_it = $newTitleIt;
+        $this->assertEquals($newTitleEn, $book->title);
+        $this->assertEquals($newTitleEn, $book->title_en);
+        $this->assertEquals($newTitleEs, $book->title_es);
+        $this->assertEquals($newTitleIt, $book->title_it);
+    }
+
     public function testEntitygetters()
     {
-        $book = $this->getBookRepo()->findOneBy(array());
+        $book = $this->getBook();
         $this->assertEquals(static::TITLE_EN, $book->getTitle());
         $this->assertEquals(static::TITLE_IT, $book->getTitleIt());
         $this->assertEquals(static::TITLE_ES, $book->getTitleEs());
@@ -89,5 +108,18 @@ class EntityTest extends TestCase
     public function testInexistentPropertyExceptions()
     {
         $this->assertEquals(static::TITLE_IT, $this->getBook()->getMyTitle());
+    }
+
+    /**
+     * calling a non-existent property should raise an error
+     *
+     * @expectedException Cypress\TranslationBundle\Exception\RuntimeException
+     */
+    public function testErrorRaised()
+    {
+        $book = $this->getBook();
+        $book->test;
+        $book->test_it;
+        $book->test = 'test';
     }
 }
