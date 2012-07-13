@@ -282,8 +282,10 @@ class TagAdmin extends Admin
             ->add('title')
             ->add('title_it', 'text')
             ->add('title_es', 'text')
+            ->add('myAwesomeDescription_es', 'text')
         ;
     }
+}
 ```
 
 You only need to define the field type, as sonata is not able to guess the type on a non-existent property
