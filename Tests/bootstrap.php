@@ -15,10 +15,12 @@ $autoload = __DIR__.'/../../../../../app/autoload.php';
 
 // if the bundle is the project, try to use the composer's autoload for the tests
 $composerAutoload = __DIR__.'/../vendor/autoload.php';
-
+//var_dump(is_file($autoload));die;
 if (is_file($autoload)) {
+    echo 'using symfony autoload'."\n";
     include $autoload;
 } elseif (is_file($composerAutoload)) {
+    echo 'using internal autoload'."\n";
     include $composerAutoload;
 } else {
     die('Unable to find autoload.php file, please use composer to load dependencies:
