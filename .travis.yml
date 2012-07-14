@@ -8,9 +8,9 @@ branches:
     - master
     - develop
 
-env:
-  - SYMFONY_VERSION=v2.0.16
-  - SYMFONY_VERSION=origin/master
+#env:
+#  - SYMFONY_VERSION=v2.0.16
+#  - SYMFONY_VERSION=origin/master
   
 before_script:
   - curl -s http://getcomposer.org/installer | php
