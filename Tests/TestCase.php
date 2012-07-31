@@ -20,6 +20,7 @@ use Doctrine\ORM\EntityManager,
     Doctrine\Common\Annotations\AnnotationReader;
 
 use Cypress\TranslationBundle\Tests\Playground\Entity\Book,
+    Cypress\TranslationBundle\Tests\Playground\Entity\Author,
     Cypress\TranslationBundle\Twig\CypressTranslationExtension;
 
 class TestCase extends \PHPUnit_Framework_TestCase
@@ -27,6 +28,10 @@ class TestCase extends \PHPUnit_Framework_TestCase
     const TITLE_EN = 'the lord of the rings';
     const TITLE_ES = 'el señor de los anillos';
     const TITLE_IT = 'il signore degli anelli';
+    const AUTHOR_EN = 'Sir JRR Tolkien';
+    const AUTHOR_ES = 'Señor JRR Tolkien';
+    const AUTHOR_IT = 'Signor JRR Tolkien';
+
 
     /**
      * @var string
@@ -114,6 +119,16 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * get entity repository
+     *
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    protected function getAuthorRepo()
+    {
+        return $this->getEntityManager()->getRepository('Cypress\TranslationBundle\Tests\Playground\Entity\Author');
+    }
+
+    /**
      * @param array $criteria criteria
      *
      * @return Book
@@ -121,6 +136,16 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getBook($criteria = array())
     {
         return $this->getBookRepo()->findOneBy($criteria);
+    }
+
+    /**
+     * @param array $criteria criteria
+     *
+     * @return Author
+     */
+    protected function getAuthor($criteria = array())
+    {
+        return $this->getAuthorRepo()->findOneBy($criteria);
     }
 
     /**
@@ -132,7 +157,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $tool = new SchemaTool($em);
         $classes = array(
             $em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\Book'),
-            $em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\BookTranslations')
+            $em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\BookTranslations'),
+            $em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\Author'),
+            $em->getClassMetadata('Cypress\TranslationBundle\Tests\Playground\Entity\AuthorTranslations')
         );
         $tool->createSchema($classes);
     }
@@ -165,7 +192,13 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $book->setTheTitleIt(static::TITLE_IT);
         $book->setTheCamelTitleIt(static::TITLE_IT);
 
+        $author = new Author();
+        $author->setName(static::AUTHOR_EN);
+        $author->setNameEs(static::AUTHOR_ES);
+        $author->setNameIt(static::AUTHOR_IT);
+
         $this->getEntityManager()->persist($book);
+        $this->getEntityManager()->persist($author);
         $this->getEntityManager()->flush();
     }
 
@@ -198,10 +231,10 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getOutput($lang, $tpl='main.html.twig', $tplLang = null)
     {
         $this->setupTwig($lang);
-        $book = $this->getBook();
         $template = $this->twig->loadTemplate($tpl);
         $params = array();
-        $params['book'] = $book;
+        $params['book'] = $this->getBook();
+        $params['author'] = $this->getAuthor();
         if ($tplLang != null) {
             $params['language'] = $tplLang;
         }

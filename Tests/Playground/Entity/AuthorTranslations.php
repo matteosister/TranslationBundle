@@ -14,18 +14,18 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="book_translations",
+ * @ORM\Table(name="author_translations",
  *     uniqueConstraints={@ORM\UniqueConstraint(columns={
  *         "locale", "object_id", "field"
  *     })}
  * )
  */
-class BookTranslations extends TranslationEntity
+class AuthorTranslations extends TranslationEntity
 {
     /**
-     * @var Book
+     * @var Author
      *
-     * @ORM\ManyToOne(targetEntity="Cypress\TranslationBundle\Tests\Playground\Entity\Book", inversedBy="translations")
+     * @ORM\ManyToOne(targetEntity="Cypress\TranslationBundle\Tests\Playground\Entity\Author", inversedBy="translations")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected $object;

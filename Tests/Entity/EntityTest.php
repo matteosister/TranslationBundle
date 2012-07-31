@@ -24,6 +24,7 @@ class EntityTest extends TestCase
     public function testData()
     {
         $this->assertCount(1, $this->getBookRepo()->findAll());
+        $this->assertCount(1, $this->getAuthorRepo()->findAll());
     }
 
     public function testPropertiesAccess()

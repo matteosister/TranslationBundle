@@ -42,5 +42,9 @@ class CypressTranslationExtensionTest extends TestCase
         $this->assertEquals(static::TITLE_ES, $this->getOutput('en', 'camelCase.html.twig', 'es'));
         $this->assertEquals(static::TITLE_IT, $this->getOutput('en', 'camelCase.html.twig', 'it'));
         $this->assertEquals(static::TITLE_EN, $this->getOutput('en', 'camelCase.html.twig', 'en'));
+
+        $this->assertEquals(static::AUTHOR_EN, $this->getOutput('en', 'multiple_property_name.html.twig'));
+        $this->assertEquals(static::AUTHOR_ES, $this->getOutput('es', 'multiple_property_name.html.twig'));
+        $this->assertEquals(static::AUTHOR_IT, $this->getOutput('it', 'multiple_property_name.html.twig'));
     }
 }
