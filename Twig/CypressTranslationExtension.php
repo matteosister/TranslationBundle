@@ -80,12 +80,31 @@ class CypressTranslationExtension extends \Twig_Extension
                 }
             }
         }
+        if (is_array($field)) {
+            $methods = array();
+            foreach ($field as $oneField) {
+                $method = $this->generateMethodName($oneField, $lang, $entity);
+                $methods[] = $method;
+                try {
+                    return $entity->$method();
+                } catch (\Exception $e) {
+                }
+            }
+            throw new \RuntimeException(sprintf('Trying to call one of the methods %s on the entity %s, but none of these methods seems to exists. Maybe a mispelling?', '"'.implode('", "', $methods).'"', get_class($entity)));
+        }
+
+        $method = $this->generateMethodName($field, $lang, $entity);
+        return $entity->$method();
+    }
+
+    private function generateMethodName($field, $lang, $entity)
+    {
         $method = 'get'.$this->container->get('cypress_translations_bundle.utilities.camel_case')->toCamelCase($field, true);
         if ($lang != $entity->getDefaultLanguage()) {
             $method .= $lang;
         }
-
-        return $entity->$method();
+        return $method;
     }
+
 
 }

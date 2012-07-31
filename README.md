@@ -257,6 +257,16 @@ By default, twig gets the language from the actual environment (from the session
 <h2>italian translation: {{ book|translate('title', 'it') }}</h2>
 ```
 
+In some case, you don't know what is the method to call on the object. For example a menu where the voices are different kind of objects with "title" and "name" as the main translated property. In this cases you could also pass an array as the property name. The first that match wins.
+
+```html+jinja
+<ul>
+    {% for menu_voice in menu_voices %}
+    <li>{{ menu_voice|translate(['title', 'name'], 'es') }}</li>
+    {% endfor %}
+</ul>
+```
+
 If you don't use twig add this to your configuration file:
 
 ```yml
