@@ -124,6 +124,8 @@ abstract class TranslatableEntity extends Translatable
                             return $translation->getContent();
                         }
                     }
+                    // the request is correct, the prop exists, and the language is defined, simply there is no translation by now.
+                    return null;
                     break;
                 }
             }

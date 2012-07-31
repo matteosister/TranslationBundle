@@ -24,7 +24,7 @@ class EntityTest extends TestCase
     public function testData()
     {
         $this->assertCount(1, $this->getBookRepo()->findAll());
-        $this->assertCount(1, $this->getAuthorRepo()->findAll());
+        $this->assertCount(2, $this->getAuthorRepo()->findAll());
     }
 
     public function testPropertiesAccess()
@@ -101,6 +101,17 @@ class EntityTest extends TestCase
         $this->assertEquals(static::TITLE_EN, $book->getTheCamelTitle());
         $this->assertEquals(static::TITLE_IT, $book->getTheCamelTitleIt());
         $this->assertEquals(static::TITLE_ES, $book->getTheCamelTitleEs());
+    }
+
+    public function testNotTranslated()
+    {
+        $author = $this->getAuthorRepo()->findOneBy(array('name' => 'Sir Ray Bradbury'));
+        $this->assertEquals('Sir Ray Bradbury', $author->getName());
+        $this->assertEquals(null, $author->getNameIt());
+        $this->assertEquals(null, $author->getNameEs());
+
+        $author->setNameIt('Signor Ray Bradbury');
+        $this->assertEquals('Signor Ray Bradbury', $author->getNameIt());
     }
 
     /**

@@ -192,13 +192,18 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $book->setTheTitleIt(static::TITLE_IT);
         $book->setTheCamelTitleIt(static::TITLE_IT);
 
+
         $author = new Author();
         $author->setName(static::AUTHOR_EN);
         $author->setNameEs(static::AUTHOR_ES);
         $author->setNameIt(static::AUTHOR_IT);
 
+        $authorNotTranslated = new Author();
+        $authorNotTranslated->setName('Sir Ray Bradbury');
+
         $this->getEntityManager()->persist($book);
         $this->getEntityManager()->persist($author);
+        $this->getEntityManager()->persist($authorNotTranslated);
         $this->getEntityManager()->flush();
     }
 
