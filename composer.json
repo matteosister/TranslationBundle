@@ -15,8 +15,10 @@
     "require": {
         "php": ">=5.3.3",
         "doctrine/doctrine-bundle": ">=2.1",
-        "doctrine/orm": "2.2.*",
-        "twig/twig":  "1.8.*"
+        "doctrine/orm": "2.2.*"
+    },
+    "require-dev": {
+        "twig/twig": "1.9.*"
     },
     "minimum-stability": "dev",
     "autoload": {
