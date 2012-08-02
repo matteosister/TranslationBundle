@@ -307,7 +307,9 @@ abstract class TranslatableEntity extends Translatable
         } else if ($this->hasProperty(lcfirst($propertyDirty))) {
             return lcfirst($propertyDirty);
         } else {
-            throw new RuntimeException(sprintf('there isn\'t a %s or %s property in the entity', $this->toCamelCase($propertyDirty), lcfirst($propertyDirty)));
+            throw new RuntimeException(
+                sprintf('there isn\'t a %s or %s property in the entity, or it is marked as "private". You need to set it as protected to make it translatable', $this->toCamelCase($propertyDirty), lcfirst($propertyDirty))
+            );
         }
     }
 
