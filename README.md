@@ -1,8 +1,6 @@
 TranslationBundle
 =================
 
-**Alpha state!** please report any bug you find! Or send a PR to become my personal hero...
-
 A Symfony2 bundle for translating Doctrine2 entities ![Travis build status](https://secure.travis-ci.org/matteosister/TranslationBundle.png)
 
 [How to install](https://github.com/matteosister/TranslationBundle/blob/master/Resources/doc/installation.md)
@@ -136,7 +134,7 @@ class Book extends TranslatableEntity
      *
      * @ORM\Column
      */
-    private $title;
+    protected $title;
 
     // constructor, getter, setter and others amenities...
 
@@ -177,6 +175,8 @@ class Book extends TranslatableEntity
 **getDefaultLanguage**: return a string with the two digit code of the main language
 
 **getOtherLanguages**: return an array with the two digit codes of the other languages
+
+**CAREFUL!!**: you need to set the properties that has a translation as *protected* and not *private*, or no party.
 
 * Rebuild you model
 
