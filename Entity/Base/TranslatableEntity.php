@@ -106,6 +106,9 @@ abstract class TranslatableEntity extends Translatable
      */
     public function __get($name)
     {
+        if (strlen($name) <= 3) {
+            return;
+        }
         if ('_' == $name[strlen($name) - 3]) {
             $language = substr($name, strlen($name) - 2);
             if ($this->getDefaultLanguage() == $language) {
