@@ -3,7 +3,7 @@ TranslationBundle
 
 A Symfony2 bundle for translating Doctrine2 entities ![Travis build status](https://secure.travis-ci.org/matteosister/TranslationBundle.png)
 
-[How to install](https://github.com/matteosister/TranslationBundle/blob/master/Resources/doc/installation.md)
+[How to install](https://github.com/matteosister/TranslationBundle/blob/master/Resources/doc/Installation.md)
 
 WYSIWYG
 -------
