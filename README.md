@@ -103,7 +103,7 @@ the sensible parts that you'll probably want to change is: the **namespace**, th
 
 Do not change the inversedBy attribute! And, yes, this is your class, but do not add properties here, do it in the main class!
 
-* add the **TranslatableEntity** superclass to your Book entity, and implement the three abstract methods
+* add the **TranslatableEntity** superclass to your Book entity, define a **translations** property with a OneToMany relation with the translations entity, and implement the three abstract methods:
 
 ```php
 <?php
@@ -135,6 +135,13 @@ class Book extends TranslatableEntity
      * @ORM\Column
      */
     protected $title;
+
+    /**
+     * @var string
+     *
+     * @ORM\OneToMany(targetEntity="Cypress\MyBundle\Entity\BookTranslations", mappedBy="object", cascade={"all"})
+     */
+    protected $translations;
 
     // constructor, getter, setter and others amenities...
 
@@ -186,7 +193,7 @@ $ ./app/console doctrine:schema:update --force
 
 **Important**
 
-If your translatable entity contains a constructor you HAVE to call the parent constructor. For example:
+If your translatable entity contains a constructor remember to call the parent constructor or set the translations property to an empty ArrayCollection. For example:
 
 ```php
 <?php
@@ -198,8 +205,9 @@ class Book extends TranslatableEntity
     {
         // call the parent constructor
         parent::__construct();
-        // your logic
-        $this->authors = new ArrayCollection();
+        // or alternatively, set the translations property
+        $this->translations = new ArrayCollection();
+        // your logic ...
     }
 }
 ```
