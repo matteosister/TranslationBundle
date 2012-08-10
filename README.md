@@ -99,7 +99,7 @@ class BookTranslations extends TranslationEntity
 
 ```
 
-the sensible parts that you'll probably want to change is: the **namespace**, the **table name** and the **target entity**.
+the sensible parts that you'll probably want to change is: the **namespace**, the **table name**, the **index name** and the **target entity**.
 
 Do not change the inversedBy attribute! And, yes, this is your class, but do not add properties here, do it in the main class!
 
