@@ -124,7 +124,9 @@ abstract class TranslatableDocument extends Translatable
 
                         // only variables should be passed as reference
                         $content = $translation->getContent();
-                        return settype($content, $type);
+                        settype($content, $type);
+
+                        return $content;
                     }
                 }
                 break;
