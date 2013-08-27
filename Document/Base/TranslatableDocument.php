@@ -104,6 +104,7 @@ abstract class TranslatableDocument extends Translatable
      */
     public function __get($name)
     {
+
         foreach ($this->getOtherLanguages() as $language) {
             if ('_'.$language === substr($name, strlen($name) - 3)) {
                 $field = substr($name, 0, strlen($name) - 3);
@@ -112,7 +113,20 @@ abstract class TranslatableDocument extends Translatable
                 }
                 foreach ($this->getTranslations() as $translation) {
                     if ($translation->getLocale() == $language && $translation->getField() == $field) {
-                        return $translation->getContent();
+
+                        $class = get_class($this);
+                        $property = new \ReflectionProperty($class, $field);
+                        $reader = new \Doctrine\Common\Annotations\AnnotationReader();
+                        $classAnnotations = $reader->getPropertyAnnotations($property);
+                        // @todo - check only one / why are we getting array ?
+                        $annotation = array_shift($classAnnotations);
+                        $type = $annotation->type;
+
+                        // only variables should be passed as reference
+                        $content = $translation->getContent();
+                        settype($content, $type);
+
+                        return $content;
                     }
                 }
                 break;
@@ -178,6 +192,7 @@ abstract class TranslatableDocument extends Translatable
                         if ($language !== $this->getDefaultLanguage()) {
                             $property .= '_'.$language;
                         }
+
                         return $this->$property;
                     } else {
                         throw new RuntimeException(sprintf('You have request the translation in %s for the %s property, but the language is not defined as default nor as other language in the entity', $language, $property));
